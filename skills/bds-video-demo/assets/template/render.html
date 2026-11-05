@@ -1,0 +1,264 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:SS;font-weight:900;src:url(fonts/source-sans-3-vietnamese-900-normal.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:SS;font-weight:900;src:url(fonts/source-sans-3-latin-900-normal.woff2) format('woff2')}
+@font-face{font-family:SS;font-weight:700;src:url(fonts/source-sans-3-vietnamese-700-normal.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:SS;font-weight:700;src:url(fonts/source-sans-3-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:SS;font-weight:600;src:url(fonts/source-sans-3-vietnamese-600-normal.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:SS;font-weight:600;src:url(fonts/source-sans-3-latin-600-normal.woff2) format('woff2')}
+:root{--cy:#05F4E8;--navy:#06121C;--y:#FFE600}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--navy);font-family:SS,sans-serif}
+#stage{position:absolute;inset:0;overflow:hidden}
+.abs{position:absolute}
+.bg{position:absolute;inset:0;background-size:cover;background-position:center;will-change:transform,opacity}
+.grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,10,18,.86) 0%,rgba(3,10,18,.35) 30%,rgba(3,10,18,.25) 52%,rgba(3,10,18,.85) 78%,rgba(3,10,18,.95) 100%)}
+.dark{position:absolute;inset:0;background:radial-gradient(1200px 900px at 70% 20%,#0E3346 0%,#081A26 45%,#050E16 100%)}
+.grid{position:absolute;inset:-200px;background-image:linear-gradient(rgba(5,244,232,.07) 2px,transparent 2px),linear-gradient(90deg,rgba(5,244,232,.07) 2px,transparent 2px);background-size:90px 90px}
+.line{position:absolute;left:0;width:1080px;text-align:center;font-weight:900;text-transform:uppercase;white-space:nowrap;transform-origin:50% 50%}
+.line span{display:inline-block;transform:scaleX(.86)}
+.w{color:#fff;text-shadow:0 0 18px rgba(0,0,0,.75),0 0 4px rgba(0,0,0,.9),0 6px 30px rgba(0,0,0,.6)}
+.c{color:var(--cy);text-shadow:0 0 22px rgba(5,244,232,.55),0 0 4px rgba(0,0,0,.9),0 6px 30px rgba(0,0,0,.65)}
+.r{color:#FF4D5E;text-shadow:0 0 22px rgba(255,77,94,.5),0 0 4px rgba(0,0,0,.9)}
+.paper{position:absolute;left:50%;background:#fff;border-radius:22px;padding:18px;box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 3px rgba(5,244,232,.0);transform-origin:50% 50%}
+.paper img{display:block;width:100%;border-radius:10px}
+.tag{position:absolute;left:28px;top:-34px;background:#E3172F;color:#fff;font-weight:900;font-size:34px;padding:8px 22px;border-radius:12px;letter-spacing:.5px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.tag.dark2{background:#0B0F14;border:3px solid var(--cy);color:var(--cy)}
+.chip{position:absolute;left:90px;height:116px;display:flex;align-items:center;gap:26px;padding:0 40px 0 26px;border-radius:60px;background:rgba(6,18,28,.72);border:3px solid rgba(5,244,232,.8);box-shadow:0 0 40px rgba(5,244,232,.25);color:#fff;font-weight:900;font-size:58px;text-transform:uppercase}
+.chip .ic{width:70px;height:70px;border-radius:50%;background:var(--cy);color:#06121C;display:flex;align-items:center;justify-content:center;font-size:44px}
+.src{position:absolute;left:0;width:1080px;text-align:center;color:rgba(255,255,255,.75);font-weight:600;font-size:30px;letter-spacing:1px}
+#brand{position:absolute;left:54px;top:70px;display:flex;align-items:center;gap:18px}
+#brand .bar{width:12px;height:64px;background:var(--cy);border-radius:4px;box-shadow:0 0 20px var(--cy)}
+#brand .t1{color:#fff;font-weight:900;font-size:44px;line-height:1}
+#brand .t2{color:var(--cy);font-weight:700;font-size:26px;letter-spacing:3px;margin-top:6px}
+#loc{position:absolute;right:54px;top:84px;color:#fff;font-weight:700;font-size:28px;letter-spacing:3px;padding:10px 20px;border:2px solid rgba(255,255,255,.5);border-radius:40px}
+#prog{position:absolute;left:0;top:0;height:8px;background:var(--cy);box-shadow:0 0 16px var(--cy)}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+#leak{position:absolute;inset:-200px;opacity:0;background:radial-gradient(700px 600px at 20% 30%,rgba(255,170,80,.9),transparent 60%),radial-gradient(800px 700px at 90% 80%,rgba(255,90,60,.7),transparent 60%);mix-blend-mode:screen}
+#glow{position:absolute;inset:0;opacity:0;background:radial-gradient(800px 600px at 50% 40%,rgba(5,244,232,.55),transparent 70%);mix-blend-mode:screen}
+#sweep{position:absolute;top:-400px;width:260px;height:2800px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transform:rotate(18deg);opacity:0}
+#vign{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+.cta{position:absolute;left:50%;width:820px;height:170px;margin-left:-410px;border-radius:90px;background:var(--cy);display:flex;align-items:center;justify-content:center;gap:28px;color:#06121C;font-weight:900;font-size:66px;box-shadow:0 0 60px rgba(5,244,232,.6),0 20px 50px rgba(0,0,0,.5)}
+.disc{position:absolute;left:60px;right:60px;bottom:120px;text-align:center;color:rgba(255,255,255,.7);font-weight:600;font-size:27px;line-height:1.35}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--cy);opacity:.5}
+</style></head>
+<body><div id="stage">
+  <div id="bgs"></div>
+  <div id="mapwrap" class="abs" style="inset:0;opacity:0"></div>
+  <div id="fx"></div>
+  <div id="els"></div>
+  <div id="sweep"></div>
+  <div id="glow"></div>
+  <div id="vign"></div>
+  <div id="brand"><div class="bar"></div><div><div class="t1">KTS THIỆN</div><div class="t2">PHÂN TÍCH BẤT ĐỘNG SẢN</div></div></div>
+  <div id="loc">ĐÀ NẴNG · 2026</div>
+  <div id="prog"></div>
+  <div id="leak"></div>
+  <div id="flash"></div>
+</div>
+<script src="assets/map_config.js"></script>
+<script src="timeline.js"></script>
+<script>
+const W=1080,H=1920;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const eOut=x=>1-Math.pow(1-x,3);
+const eExpo=x=>x>=1?1:1-Math.pow(2,-10*x);
+const eBack=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+const eIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const SFX=[]; const sfx=(t,name,g=0)=>SFX.push({t:+t.toFixed(3),name,g});
+
+/* ---------- MAP (ảnh vệ tinh thật, Esri World Imagery, zoom 13) ---------- */
+const MZ=MAPCFG.z, MX0=MAPCFG.x0, MY0=MAPCFG.y0;
+function geo(lat,lon){const n=2**MZ;const x=(lon+180)/360*n;const la=lat*Math.PI/180;const y=(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*n;return [(x-MX0)*256,(y-MY0)*256];}
+const PINS={1:[...geo(15.8801,108.338),'HỘI AN · THĂNG BÌNH'],2:[...geo(16.072,108.232),'VÕ VĂN KIỆT · THUẬN PHƯỚC'],3:[...geo(16.075,108.125),'LIÊN CHIỂU · HÒA VANG'],4:[...geo(16.003,108.263),'NGŨ HÀNH SƠN']};
+const PLACES=[[16.118,108.285,'BÁN ĐẢO SƠN TRÀ'],[16.045,108.218,'SÔNG HÀN'],[15.95,108.512,'CÙ LAO CHÀM'],[15.98,108.42,'BIỂN ĐÔNG'],[15.872,108.23,'SÔNG THU BỒN'],[16.055,108.20,'SÂN BAY ĐÀ NẴNG']];
+document.getElementById('mapwrap').innerHTML=`
+<div id="mapimg" style="position:absolute;left:0;top:0;width:${MAPCFG.W}px;height:${MAPCFG.H}px;transform-origin:0 0;filter:saturate(.95) brightness(.88) contrast(1.12)"><img src="${MAPCFG.src}" style="position:absolute;left:0;top:0">${(MAPCFG.det||[]).map(m=>`<img class="det" src="${m.src}" style="position:absolute;left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px;opacity:0;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%)">`).join('')}</div><div id="mapdim" style="position:absolute;inset:0;background:#030A12;opacity:0"></div>
+<div style="position:absolute;inset:0;background:rgba(4,30,48,.12);mix-blend-mode:multiply"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,10,18,.85) 0%,rgba(3,10,18,.25) 28%,rgba(3,10,18,.0) 50%,rgba(3,10,18,.35) 75%,rgba(3,10,18,.9) 100%)"></div>
+<div id="places"></div><div id="pins"></div>
+<div style="position:absolute;right:40px;bottom:250px;color:rgba(255,255,255,.55);font-family:SS;font-weight:600;font-size:22px">Ảnh vệ tinh: Esri, Maxar, Earthstar Geographics</div>
+<div style="position:absolute;right:60px;top:300px;width:64px;text-align:center;color:#fff;font-family:SS;font-weight:900;font-size:26px"><svg width="64" height="64" viewBox="-32 -32 64 64"><circle r="28" fill="rgba(6,18,28,.6)" stroke="rgba(255,255,255,.7)" stroke-width="3"/><path d="M0,-20 L9,8 L0,2 L-9,8 Z" fill="#05F4E8"/></svg>N</div>`;
+const pinEls={};
+for(const [k,[x,y,l]] of Object.entries(PINS)){const d=document.createElement('div');d.style.cssText='position:absolute;left:0;top:0;width:0;height:0';
+ d.innerHTML=`<div class="ring" style="position:absolute;border:5px solid #05F4E8;border-radius:50%"></div>
+ <div class="core" style="position:absolute;border-radius:50%;background:#05F4E8;box-shadow:0 0 30px #05F4E8,0 0 8px #fff;display:flex;align-items:center;justify-content:center;color:#06121C;font-family:SS;font-weight:900"><span>${k}</span></div>
+ <div class="lab" style="position:absolute;top:-34px;${k==3?'left:60px':'right:60px'};white-space:nowrap;background:rgba(6,18,28,.88);border:3px solid #05F4E8;border-radius:14px;padding:8px 20px;color:#fff;font-family:SS;font-weight:900;font-size:34px;box-shadow:0 10px 30px rgba(0,0,0,.5)"><span style="display:inline-block;transform:scaleX(.86);transform-origin:${k==3?'left':'right'}">${l}</span></div>`;
+ document.getElementById('pins').appendChild(d);pinEls[k]=d;}
+const placeEls=PLACES.map(([la,lo,n])=>{const d=document.createElement('div');const [x,y]=geo(la,lo);d.style.cssText='position:absolute;left:0;top:0;white-space:nowrap;color:rgba(255,255,255,.72);font-family:SS;font-weight:700;font-size:26px;letter-spacing:4px;text-shadow:0 2px 10px #000;transform-origin:0 0';d.textContent=n;document.getElementById('places').appendChild(d);return {d,x,y};});
+// camera keyframes [t, cx, cy, scale] trong toạ độ ảnh vệ tinh
+// Toàn cảnh: tâm + scale sao cho ảnh phủ kín khung 1080x1920. Có thể đặt MAPCFG.ov = [cx,cy,scale] để tự chỉnh.
+const OV=MAPCFG.ov || [MAPCFG.W*0.49, MAPCFG.H*0.45, Math.max(1080/MAPCFG.W, 1920/MAPCFG.H)*1.08];
+const P=k=>PINS[k];
+// Bay theo kiểu Google Earth: toàn cảnh -> zoom sâu vào vị trí -> đẩy chậm -> zoom ra toàn cảnh
+const DEEP=2.0, PUSH=2.45;
+const C=(k,dy=0)=>[P(k)[0],P(k)[1]+dy];
+const CAM=[[10.6,...OV],[10.85,...OV],[11.95,...C(1,60),DEEP],[14.95,...C(1,60),PUSH],[15.8,...OV],
+ [15.95,...OV],[17.0,...C(2,60),DEEP],[19.55,...C(2,60),PUSH],[20.4,...OV],
+ [20.55,...OV],[21.6,...C(3,60),DEEP],[25.2,...C(3,60),PUSH],[26.1,...OV],
+ [28.95,OV[0],OV[1],0.40],[29.75,...C(4,60),DEEP],[32.6,...C(4,60),PUSH],[33.6,...OV]];
+// thời điểm zoom ra (để gắn whoosh) và lúc ẩn nhãn ghim
+const ZOOMOUT=[14.95,19.55,25.2,32.6]; const LABOUT={1:13.0,2:17.0,3:22.0,4:30.3};
+const DIM=[[13.0,14.95],[17.0,19.55],[22.0,25.2],[30.3,32.6]];
+function cam(t){if(t<=CAM[0][0])return CAM[0];for(let i=0;i<CAM.length-1;i++){const a=CAM[i],b=CAM[i+1];if(t>=a[0]&&t<=b[0]){if(b[0]-a[0]<0.05)return b;const k=eIO(lin(t,a[0],b[0]));
+ return [t,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k,a[3]*Math.pow(b[3]/a[3],k)];}}return CAM[CAM.length-1];}
+const PINACT={1:[10.9,16],2:[15.9,20.6],3:[20.5,26.2],4:[29.13,40]};
+function renderMap(t){const [,cx,cy,s]=cam(t);const ox=540-cx*s, oy=1000-cy*s;
+  document.getElementById('mapimg').style.transform=`translate(${ox}px,${oy}px) scale(${s})`;
+  const dop=clamp((s-1.05)/0.45); for(const im of document.querySelectorAll('.det')) im.style.opacity=dop;
+  let dm=0; for(const [a,b] of DIM){ dm=Math.max(dm, Math.min(lin(t,a,a+0.4),1-lin(t,b-0.3,b))); } document.getElementById('mapdim').style.opacity=dm*0.38;
+  for(const p of placeEls){p.d.style.transform=`translate(${p.x*s+ox}px,${p.y*s+oy}px) translate(-50%,-50%)`;p.d.style.opacity=(s<0.6?0.9:0.55)*(t>30.2&&t<33.6?0.3:1);}
+  for(const k of [1,2,3,4]){const d=pinEls[k];const [x,y]=PINS[k];const [a,bq]=PINACT[k];const act=t>=a&&t<bq;const visited=t>=bq;
+    d.style.transform=`translate(${x*s+ox}px,${y*s+oy}px)`;
+    const inA=eBack(lin(t,a,a+0.4)); const pulse=act?(1+0.18*Math.sin((t-a)*8)):1;
+    const cr=(act?30*pulse*(0.6+0.4*inA):(visited?20:15)); const core=d.querySelector('.core');
+    core.style.width=core.style.height=(2*cr)+'px';core.style.left=core.style.top=(-cr)+'px';core.style.fontSize=(cr*1.1)+'px';
+    core.style.background=(act||visited)?'#05F4E8':'rgba(150,190,200,.75)';
+    const ring=d.querySelector('.ring');const rr=act?34+((t-a)*70)%80:0;ring.style.width=ring.style.height=(2*rr)+'px';ring.style.left=ring.style.top=(-rr-5)+'px';ring.style.opacity=act?1-(((t-a)*70)%80)/80:0;
+    const recap=t>26.1&&t<29.13; d.querySelector('.lab').style.opacity=act?inA*(1-lin(t,LABOUT[k]-0.15,LABOUT[k])):0;
+    d.style.opacity=(k==4&&t>26.1&&t<29.13)?(0.45+0.55*Math.abs(Math.sin(t*5))):1; } }
+
+/* ---------- BACKGROUNDS ---------- */
+const bgEls=TL.bgs.map(([src,i,o,dir])=>{let el;
+  if(src==='DARK'){el=document.createElement('div');el.className='bg';el.innerHTML='<div class="dark"></div><div class="grid"></div>';}
+  else if(src==='MAP'){el=null;}
+  else{el=document.createElement('div');el.className='bg';el.style.backgroundImage=`url(${src})`;const g=document.createElement('div');g.className='grade';el.appendChild(g);}
+  if(el)document.getElementById('bgs').appendChild(el);return {el,src,i,o,dir};});
+// particles for dark scenes
+const fx=document.getElementById('fx');const dots=[];
+for(let i=0;i<40;i++){const d=document.createElement('div');d.className='dot';fx.appendChild(d);dots.push({d,x:(i*197)%1080,y:(i*331)%1920,s:.3+((i*7)%10)/10,sz:4+(i%4)*3});}
+
+/* ---------- ELEMENTS ---------- */
+const E=[]; const els=document.getElementById('els');
+function line(text,cls,cap,y,tin,tout,opt={}){const el=document.createElement('div');el.className='line '+cls;const fs=cap/0.66;
+ el.style.fontSize=fs+'px';el.style.top=(y-fs*0.27-cap/2)+'px';el.style.height=fs+'px';el.style.lineHeight=fs+'px';
+ el.innerHTML=`<span>${text}</span>`;els.appendChild(el);E.push({type:'line',el,tin,tout,anim:opt.anim||'track',count:opt.count,cap,y,fs});
+ if(opt.sfx!==false)sfx(tin,opt.sfx||(cls==='c'?'ting':'pop'),opt.g||0);return el;}
+function paper(src,tag,y,w,tin,tout,rot=-2,opt={}){const el=document.createElement('div');el.className='paper';el.style.width=w+'px';el.style.marginLeft=(-w/2-18)+'px';el.style.top=y+'px';
+ el.innerHTML=`<div class="tag ${opt.dark?'dark2':''}">${tag}</div><img src="${src}">`;els.appendChild(el);E.push({type:'paper',el,tin,tout,rot});sfx(tin,'whoosh',-2);sfx(tin+0.32,'shutter',-3);return el;}
+function chip(icon,text,y,tin,tout){const el=document.createElement('div');el.className='chip';el.style.top=y+'px';el.innerHTML=`<div class="ic">${icon}</div><span style="display:inline-block;transform:scaleX(.86);transform-origin:left">${text}</span>`;els.appendChild(el);E.push({type:'chip',el,tin,tout});sfx(tin,'notify',-1);return el;}
+function src(text,y,tin,tout){const el=document.createElement('div');el.className='src';el.style.top=y+'px';el.textContent=text;els.appendChild(el);E.push({type:'fade',el,tin,tout});}
+function raw(html,tin,tout,type='fade'){const d=document.createElement('div');d.innerHTML=html;const el=d.firstElementChild;els.appendChild(el);E.push({type,el,tin,tout});return el;}
+
+// SCENE 1 – HOOK
+line('THỊ TRƯỜNG ĐÀ NẴNG','w',66,420,0.3,2.05,{sfx:'whoosh'});
+line('ĐANG GIẢM ↓','r',120,560,0.75,2.05,{sfx:'impact',g:-4});
+line('NHƯNG CÓ','w',66,420,2.15,4.4);
+line('4 VÙNG','c',190,600,2.35,4.4,{sfx:'impact',g:-2,anim:'hero'});
+line('VẪN TĂNG GIÁ ↑','w',78,790,3.25,4.4,{sfx:'ting'});
+// SCENE 2 – SỰ THẬT
+paper('assets/cafef_head.png','CAFEF · 25/10/2026',640,900,4.7,8.0,-2);
+line('GIAO DỊCH CĂN HỘ Q3','w',50,1330,5.6,8.0);
+line('-25%','r',190,1530,6.7,8.0,{anim:'count',count:[0,-25,'%'],sfx:'impact',g:-3});
+src('Nguồn: DKRA Consulting, báo cáo quý III/2026',1700,5.6,8.0);
+paper('assets/bdt_head.png','BÁO ĐẦU TƯ · 23/10/2026',600,900,8.0,10.6,2);
+line('TIỀN KHÔNG BIẾN MẤT','w',62,1300,8.05,10.6);
+line('TIỀN ĐANG','w',62,1430,9.35,10.6);
+line('ĐỔI CHỖ','c',150,1590,9.55,10.6,{anim:'hero',sfx:'impact',g:-4});
+// SCENE 3 – VÙNG 1
+line('VÙNG SỐ 1','w',62,330,10.85,12.95,{sfx:'whoosh'});
+line('VEN BIỂN PHÍA NAM','c',100,470,11.3,12.95);
+paper('assets/vnf_head.png','VIETNAMFINANCE · 31/05/2026',560,920,13.0,15.75,-2);
+line('BẢNG GIÁ ĐẤT MỚI TĂNG TỚI','w',50,1180,13.45,15.75);
+line('+70%','c',230,1420,14.5,15.75,{anim:'count',count:[0,70,'%',true],sfx:'impact',g:-2});
+src('Khu vực Quảng Nam cũ · tăng 9% – 70% · bảng giá Nhà nước',1640,13.45,15.75);
+// SCENE 4 – VÙNG 2
+line('VÙNG SỐ 2','w',62,330,15.9,17.0,{sfx:'whoosh'});
+line('TRỤC TÀI CHÍNH QUỐC TẾ','c',90,470,16.2,20.3);
+paper('assets/dantri_head.png','DÂN TRÍ · 22/10/2026',620,900,17.0,20.3,2);
+line('QUY MÔ','w',50,1250,18.2,20.3);
+line('300 HA','c',200,1440,18.85,20.3,{anim:'count',count:[0,300,' HA'],sfx:'impact',g:-3});
+src('Trung tâm Tài chính quốc tế Việt Nam tại Đà Nẵng · 300 – 320 ha',1640,18.2,20.3);
+// SCENE 5 – VÙNG 3
+line('VÙNG SỐ 3','w',62,330,20.5,21.95,{sfx:'whoosh'});
+line('TÂY BẮC · KHU THƯƠNG MẠI TỰ DO','c',70,460,20.9,26.0);
+paper('assets/cafeland_head.png','CAFELAND',600,920,22.0,26.0,-2);
+line('DỰ ÁN KHU CHỨC NĂNG','w',50,1210,22.6,26.0);
+line('3.525 TỶ','c',190,1410,23.6,26.0,{anim:'count',count:[0,3525,' TỶ'],sfx:'cash',g:-2});
+src('276 ha · xã Hòa Vang · Khu thương mại tự do Đà Nẵng',1620,22.6,26.0);
+// SCENE 6 – VÙNG 4 (đáng tiền nhất)
+line('VÙNG SỐ 4','w',62,330,26.2,29.1,{sfx:'whoosh'});
+line('ĐÁNG TIỀN NHẤT','c',100,470,27.5,29.1);
+line('???','w',200,1090,27.7,29.1,{anim:'pulse',sfx:false});
+sfx(27.6,'heartbeat',-2);sfx(28.4,'heartbeat',-2);sfx(26.9,'riser',-4);
+line('NGŨ HÀNH SƠN','c',130,400,29.13,33.4,{anim:'hero',sfx:'impact',g:0});
+line('CHIẾM','w',50,1240,30.3,33.4);
+line('43%','c',230,1440,30.5,33.4,{anim:'count',count:[0,43,'%'],sfx:'ting'});
+line('GIAO DỊCH CĂN HỘ TOÀN THÀNH PHỐ','w',48,1620,30.9,33.4);
+paper('assets/cafef_quote.png','DKRA · QUÝ III/2026',600,900,31.2,33.4,1.5);
+// SCENE 7 – REGAL COMPLEX
+line('REGAL GROUP','w',56,330,34.15,41.6,{sfx:'whoosh'});
+line('REGAL COMPLEX','c',120,470,34.3,41.6,{anim:'hero',sfx:'sparkle'});
+paper('assets/tt_regal_head.png','TUỔI TRẺ · 26/06/2026',650,860,35.2,38.75,-2);
+line('683','c',230,1460,36.5,38.75,{anim:'count',count:[0,683,''],sfx:'impact',g:-3});
+line('CĂN HỘ HẠNG SANG · NGŨ HÀNH SƠN','w',46,1640,36.9,38.75);
+paper('assets/tt_regal_quote.png','SỞ XÂY DỰNG XÁC NHẬN',640,640,38.8,41.6,2,{dark:true});
+line('CHỈ 9 THÁNG','c',150,1430,38.8,41.6,{anim:'hero',sfx:'impact',g:-3});
+line('SAU KHỞI CÔNG ĐÃ ĐỦ ĐIỀU KIỆN BÁN','w',44,1600,39.9,41.6);
+// SCENE 8 – HOÀN THIỆN
+line('HẠNG SANG','c',120,380,41.9,47.9,{anim:'hero',sfx:'sparkle'});
+line('ĐẾN TỪNG CHI TIẾT','w',66,540,42.4,47.9);
+paper('assets/palace_quote.png','THE PALACE · NGUỒN: CHỦ ĐẦU TƯ',700,940,42.7,47.9,-1.5,{dark:true});
+chip('◆','ĐÁ MARBLE NHẬP KHẨU',1080,44.25,47.9);
+chip('▣','KÍNH HỘP LOW-E',1230,45.6,47.9);
+chip('✦','ĐÈN OCCHIO · ĐỨC',1380,46.6,47.9);
+// SCENE 9 – CTA
+line('ĐÚNG VÙNG','w',100,520,48.2,55.6,{anim:'hero',sfx:'impact',g:-4});
+line('+ ĐÚNG CHỦ ĐẦU TƯ','c',100,700,48.95,55.6,{anim:'hero',sfx:'impact',g:-4});
+raw(`<div class="cta" style="top:1020px">💬 <span style="display:inline-block;transform:scaleX(.86)">BÌNH LUẬN "REGAL"</span></div>`,50.3,55.6,'pop');sfx(50.3,'pop',0);sfx(50.35,'sparkle',-4);
+line('NHẬN BẢNG SO SÁNH DỰ ÁN','w',46,1290,51.6,55.6);
+raw(`<div class="disc">Bảng giá đất là giá Nhà nước công bố, không phải giá giao dịch.<br>Nội dung tham khảo, không phải khuyến nghị đầu tư.<br>Nguồn: DKRA, VietnamFinance, Tuổi Trẻ, Dân Trí, CafeLand, Regal Group.</div>`,51.0,55.6);
+// transitions SFX
+[4.45,10.6,33.3,41.8,48.1].forEach(t=>sfx(t,'whoosh',-3));
+sfx(0,'impact',-6);
+ZOOMOUT.forEach(t=>sfx(t,'whoosh',-1));
+
+const FLASH=[[0,0.5,1],[29.13,0.35,0.9],[33.35,0.25,0.5],[48.1,0.25,0.4]];
+const GLOW=[[2.35,1.2],[29.13,1.6],[34.3,1.0],[48.95,1.0]];
+const SWEEP=[[4.7],[13.0],[17.0],[22.0],[35.2],[42.7]];
+
+window.SFX_LIST=SFX;
+function fmtNum(v,suf,plus){const n=Math.round(v);const s=Math.abs(n).toLocaleString('de-DE');return (n<0?'-':(plus&&n>0?'+':''))+s+suf;}
+window.fit=function(){for(const e of E){if(e.type!=='line')continue;const el=e.el,sp=el.querySelector('span');el.style.display='';const txt=sp.textContent;if(e.count){sp.textContent=fmtNum(e.count[1],e.count[2],e.count[3]);}const w=sp.getBoundingClientRect().width;sp.textContent=txt;if(w>950){const fs=e.fs*950/w;el.style.fontSize=fs+'px';el.style.height=fs+'px';el.style.lineHeight=fs+'px';el.style.top=(e.y-fs*0.27-fs*0.66/2)+'px';}el.style.display='none';}}
+
+window.render=function(t){
+  // backgrounds
+  for(const b of bgEls){ if(!b.el)continue; const fi=lin(t,b.i,b.i+0.35), fo=1-lin(t,b.o-0.35,b.o); const op=Math.min(fi,fo);
+    b.el.style.opacity=op; if(op<=0){b.el.style.display='none';continue;} b.el.style.display='block';
+    const p=lin(t,b.i,b.o); const s=1.08+0.10*p; const dx=b.dir*40*(p-.5);
+    b.el.style.transform=`translateX(${dx}px) scale(${s})`;
+    const g=b.el.querySelector('.grid'); if(g) g.style.transform=`translateY(${(t*30)%90}px)`; }
+  // map
+  const mw=document.getElementById('mapwrap'); let mop=0;
+  for(const b of bgEls){ if(b.src!=='MAP')continue; mop=Math.max(mop,Math.min(lin(t,b.i,b.i+0.3),1-lin(t,b.o-0.3,b.o))); }
+  mw.style.opacity=mop;
+  if(mop>0) renderMap(t);
+  // particles
+  const dop=Math.max(mop, ...bgEls.filter(b=>b.src==='DARK').map(b=>Math.min(lin(t,b.i,b.i+.3),1-lin(t,b.o-.3,b.o))));
+  for(const p of dots){p.d.style.opacity=.45*dop; const y=(p.y - t*40*p.s)%1920; p.d.style.transform=`translate(${p.x}px,${y<0?y+1920:y}px)`; p.d.style.width=p.d.style.height=p.sz+'px';}
+  // elements
+  for(const e of E){ const el=e.el; if(t<e.tin||t>=e.tout+0.2){el.style.display='none';continue;} el.style.display='';
+    const k=t-e.tin, ko=lin(t,e.tout-0.12,e.tout); let op=1-ko;
+    if(e.type==='line'){ const sp=el.querySelector('span');
+      if(e.anim==='track'){const x=eExpo(clamp(k/0.45)); sp.style.letterSpacing=((1-x)*0.55)+'em'; el.style.filter=`blur(${(1-x)*10}px)`; op*=clamp(k/0.15); el.style.transform='';}
+      else if(e.anim==='hero'||e.anim==='count'){const x=eExpo(clamp(k/0.35)); el.style.transform=`scale(${1.7-0.7*x})`; el.style.filter=`blur(${(1-x)*8}px)`; op*=clamp(k/0.12); sp.style.letterSpacing='0';
+        if(e.count){const [a,b,suf]=e.count; const c=eOut(clamp(k/0.7)); sp.textContent=fmtNum(a+(b-a)*c,suf,e.count[3]);} }
+      else if(e.anim==='pulse'){const s=1+0.06*Math.sin(k*9); el.style.transform=`scale(${s})`; op*=clamp(k/0.2)*(0.75+0.25*Math.sin(k*9));}
+      el.style.opacity=op; }
+    else if(e.type==='paper'){const x=eBack(clamp(k/0.55)); const y=(1-x)*700; const r=e.rot+(1-x)*10; const s=(0.88+0.12*x)*(1+0.03*clamp(k/4));
+      const outx=-eIO(ko)*1100; el.style.transform=`translate(${outx}px,${y}px) rotate(${r}deg) scale(${s})`; el.style.opacity=clamp(k/0.15)*(1-ko*0.3);}
+    else if(e.type==='chip'){const x=eBack(clamp(k/0.45)); el.style.transform=`translateX(${(1-x)*-500}px)`; el.style.opacity=clamp(k/0.12)*(1-ko);}
+    else if(e.type==='pop'){const x=eBack(clamp(k/0.5)); const s=(0.3+0.7*x)*(1+0.03*Math.sin(Math.max(0,k-0.5)*6)); el.style.transform=`scale(${s})`; el.style.opacity=clamp(k/0.1)*(1-ko);}
+    else {el.style.opacity=clamp(k/0.3)*(1-ko);}
+  }
+  // fx
+  let fl=0; for(const [a,d,m] of FLASH){ if(t>=a&&t<a+d) fl=Math.max(fl,m*(1-(t-a)/d)); } document.getElementById('flash').style.opacity=fl;
+  let gl=0; for(const [a,d] of GLOW){ if(t>=a&&t<a+d) gl=Math.max(gl,Math.sin(Math.PI*(t-a)/d)*0.8);} document.getElementById('glow').style.opacity=gl;
+  const sw=document.getElementById('sweep'); let swo=0,swx=-400; for(const [a] of SWEEP){ if(t>=a+0.4&&t<a+1.2){const p=(t-a-0.4)/0.8; swo=Math.sin(Math.PI*p); swx=-300+p*1700;} } sw.style.opacity=swo; sw.style.left=swx+'px';
+  const lk=document.getElementById('leak'); const lp=lin(t,54.3,55.6); lk.style.opacity=Math.sin(Math.PI*Math.min(lp*1.4,1))*0.9 + (t>55.2?lin(t,55.2,55.6):0); lk.style.transform=`translateX(${lp*200}px)`;
+  document.getElementById('prog').style.width=(t/TL.total*1080)+'px';
+  // final fade
+  document.getElementById('stage').style.filter = t>55.0? `brightness(${1+lin(t,55.0,55.6)*1.5})`:'';
+};
+</script></body></html>
