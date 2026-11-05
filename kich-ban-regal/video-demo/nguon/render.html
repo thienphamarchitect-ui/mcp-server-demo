@@ -67,43 +67,47 @@ const eBack=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow
 const eIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
 const SFX=[]; const sfx=(t,name,g=0)=>SFX.push({t:+t.toFixed(3),name,g});
 
-/* ---------- MAP (sơ đồ minh hoạ) ---------- */
-const PINS={1:[790,1340,'HỘI AN · THĂNG BÌNH'],2:[650,880,'VÕ VĂN KIỆT · THUẬN PHƯỚC'],3:[330,660,'LIÊN CHIỂU · HÒA VANG'],4:[715,1070,'NGŨ HÀNH SƠN']};
+/* ---------- MAP (ảnh vệ tinh thật, Esri World Imagery, zoom 13) ---------- */
+const MZ=13, MX0=6551, MY0=3717;
+function geo(lat,lon){const n=2**MZ;const x=(lon+180)/360*n;const la=lat*Math.PI/180;const y=(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*n;return [(x-MX0)*256,(y-MY0)*256];}
+const PINS={1:[...geo(15.8801,108.338),'HỘI AN · THĂNG BÌNH'],2:[...geo(16.072,108.232),'VÕ VĂN KIỆT · THUẬN PHƯỚC'],3:[...geo(16.075,108.125),'LIÊN CHIỂU · HÒA VANG'],4:[...geo(16.003,108.263),'NGŨ HÀNH SƠN']};
+const PLACES=[[16.118,108.285,'BÁN ĐẢO SƠN TRÀ'],[16.045,108.218,'SÔNG HÀN'],[15.95,108.512,'CÙ LAO CHÀM'],[15.98,108.42,'BIỂN ĐÔNG'],[15.872,108.23,'SÔNG THU BỒN'],[16.055,108.20,'SÂN BAY ĐÀ NẴNG']];
 document.getElementById('mapwrap').innerHTML=`
-<div class="dark"></div><div class="grid" id="mgrid"></div>
-<svg id="map" width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:0;top:0">
- <defs><linearGradient id="sea" x1="0" x2="1"><stop offset="0" stop-color="#062233"/><stop offset="1" stop-color="#041621"/></linearGradient>
- <linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12384A"/><stop offset="1" stop-color="#0C2836"/></linearGradient>
- <filter id="gl"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
- <g id="mapg">
- <rect x="-400" y="300" width="1900" height="1400" fill="url(#sea)"/>
- ${[0,1,2,3,4].map(i=>`<path d="M${560+i*60},420 C${600+i*60},560 ${560+i*60},700 ${700+i*60},800 S${760+i*60},1100 ${880+i*60},1500" stroke="rgba(5,244,232,${.10-i*.015})" stroke-width="3" fill="none"/>`).join('')}
- <path d="M-400,430 L470,430 C520,500 430,580 520,650 C600,720 640,760 610,820 L640,800 C700,740 820,700 860,740 C905,785 820,840 700,850 C660,870 650,910 665,960 L725,1140 L805,1320 L870,1700 L-400,1700 Z" fill="url(#land)" stroke="rgba(5,244,232,.85)" stroke-width="5" filter="url(#gl)"/>
- <path d="M612,822 C590,900 575,960 540,1010 S430,1100 380,1180" stroke="#1E6E86" stroke-width="12" fill="none" stroke-linecap="round"/>
- <path d="M806,1322 C700,1360 600,1350 500,1390 S340,1430 250,1460" stroke="#1E6E86" stroke-width="12" fill="none" stroke-linecap="round"/>
- <text x="900" y="1180" fill="rgba(5,244,232,.45)" font-family="SS" font-weight="700" font-size="34" letter-spacing="8">BIỂN ĐÔNG</text>
- <text x="560" y="1000" fill="rgba(255,255,255,.35)" font-family="SS" font-weight="700" font-size="24" transform="rotate(-60 560 1000)">SÔNG HÀN</text>
- <text x="180" y="560" fill="rgba(255,255,255,.35)" font-family="SS" font-weight="700" font-size="28" letter-spacing="4">ĐÀ NẴNG</text>
- <g transform="translate(960,470)"><circle r="34" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3"/><path d="M0,-26 L10,8 L0,2 L-10,8 Z" fill="#fff"/><text y="62" text-anchor="middle" fill="#fff" font-family="SS" font-weight="700" font-size="26">N</text></g>
- ${Object.entries(PINS).map(([k,[x,y,l]])=>`<g id="pin${k}" transform="translate(${x},${y})">
-   <circle class="ring" r="40" fill="none" stroke="#05F4E8" stroke-width="5"/>
-   <circle class="core" r="22" fill="#05F4E8" filter="url(#gl)"/>
-   <text class="num" y="9" text-anchor="middle" fill="#06121C" font-family="SS" font-weight="900" font-size="28">${k}</text>
-   <g class="lab"><rect x="${k==1||k==4||k==2?-470:46}" y="-30" rx="14" width="${l.length*21+40}" height="60" fill="rgba(6,18,28,.85)" stroke="#05F4E8" stroke-width="3"/>
-   <text x="${(k==1||k==4||k==2?-470:46)+20}" y="12" fill="#fff" font-family="SS" font-weight="900" font-size="32">${l}</text></g></g>`).join('')}
- </g>
- <text x="540" y="1640" text-anchor="middle" fill="rgba(255,255,255,.45)" font-family="SS" font-weight="600" font-size="26">Sơ đồ minh hoạ, không theo tỷ lệ</text>
-</svg>`;
-// fix label widths for pins that sit on the right side: shift labels to left
-for(const k of [1,2,4]){const g=document.querySelector(`#pin${k} .lab`);const r=g.querySelector('rect');const w=+r.getAttribute('width');r.setAttribute('x',-w-46);g.querySelector('text').setAttribute('x',-w-46+20);}
-
-// map camera keyframes [t, cx, cy, scale]
-const CAM=[[10.6,540,1000,1],[11.4,720,1180,1.12],[13,720,1180,1.16],[15.8,560,1000,1.0],[16.6,620,920,1.15],[17.1,620,920,1.18],[20.4,540,1000,1.0],[21.2,420,760,1.15],[22.0,420,760,1.18],
- [26.1,540,1000,0.95],[28.9,540,1000,1.02],[29.13,640,1060,1.2],[33.6,640,1060,1.28]];
-function cam(t){let a=CAM[0],b=CAM[CAM.length-1];for(let i=0;i<CAM.length-1;i++){if(t>=CAM[i][0]&&t<=CAM[i+1][0]){a=CAM[i];b=CAM[i+1];break;}}
- if(t<CAM[0][0])return CAM[0]; if(t>b[0])return b; const k=eIO(lin(t,a[0],b[0]));
- if(b[0]-a[0]<0.05) return b; return [t,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k,a[3]+(b[3]-a[3])*k];}
+<img id="mapimg" src="assets/map_sat_clean.jpg" style="position:absolute;left:0;top:0;transform-origin:0 0;filter:saturate(.95) brightness(.88) contrast(1.12)">
+<div style="position:absolute;inset:0;background:rgba(4,30,48,.12);mix-blend-mode:multiply"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,10,18,.85) 0%,rgba(3,10,18,.25) 28%,rgba(3,10,18,.0) 50%,rgba(3,10,18,.35) 75%,rgba(3,10,18,.9) 100%)"></div>
+<div id="places"></div><div id="pins"></div>
+<div style="position:absolute;right:40px;bottom:250px;color:rgba(255,255,255,.55);font-family:SS;font-weight:600;font-size:22px">Ảnh vệ tinh: Esri, Maxar, Earthstar Geographics</div>
+<div style="position:absolute;right:60px;top:300px;width:64px;text-align:center;color:#fff;font-family:SS;font-weight:900;font-size:26px"><svg width="64" height="64" viewBox="-32 -32 64 64"><circle r="28" fill="rgba(6,18,28,.6)" stroke="rgba(255,255,255,.7)" stroke-width="3"/><path d="M0,-20 L9,8 L0,2 L-9,8 Z" fill="#05F4E8"/></svg>N</div>`;
+const pinEls={};
+for(const [k,[x,y,l]] of Object.entries(PINS)){const d=document.createElement('div');d.style.cssText='position:absolute;left:0;top:0;width:0;height:0';
+ d.innerHTML=`<div class="ring" style="position:absolute;border:5px solid #05F4E8;border-radius:50%"></div>
+ <div class="core" style="position:absolute;border-radius:50%;background:#05F4E8;box-shadow:0 0 30px #05F4E8,0 0 8px #fff;display:flex;align-items:center;justify-content:center;color:#06121C;font-family:SS;font-weight:900"><span>${k}</span></div>
+ <div class="lab" style="position:absolute;top:-34px;${k==3?'left:60px':'right:60px'};white-space:nowrap;background:rgba(6,18,28,.88);border:3px solid #05F4E8;border-radius:14px;padding:8px 20px;color:#fff;font-family:SS;font-weight:900;font-size:34px;box-shadow:0 10px 30px rgba(0,0,0,.5)"><span style="display:inline-block;transform:scaleX(.86);transform-origin:${k==3?'left':'right'}">${l}</span></div>`;
+ document.getElementById('pins').appendChild(d);pinEls[k]=d;}
+const placeEls=PLACES.map(([la,lo,n])=>{const d=document.createElement('div');const [x,y]=geo(la,lo);d.style.cssText='position:absolute;left:0;top:0;white-space:nowrap;color:rgba(255,255,255,.72);font-family:SS;font-weight:700;font-size:26px;letter-spacing:4px;text-shadow:0 2px 10px #000;transform-origin:0 0';d.textContent=n;document.getElementById('places').appendChild(d);return {d,x,y};});
+// camera keyframes [t, cx, cy, scale] trong toạ độ ảnh vệ tinh
+const OV=[2250,2750,0.36];
+const P=k=>PINS[k];
+const CAM=[[10.6,...OV],[11.5,P(1)[0]-40,P(1)[1]-120,0.78],[13,P(1)[0]-40,P(1)[1]-120,0.84],
+ [15.8,2150,2500,0.45],[16.7,P(2)[0]+60,P(2)[1],0.95],[17.1,P(2)[0]+60,P(2)[1],1.0],
+ [20.4,2000,2300,0.45],[21.3,P(3)[0]+160,P(3)[1],0.85],[22.0,P(3)[0]+160,P(3)[1],0.9],
+ [26.1,...OV],[28.9,OV[0],OV[1],0.38],[29.13,P(4)[0],P(4)[1]+40,0.95],[33.6,P(4)[0],P(4)[1]+40,1.05]];
+function cam(t){if(t<=CAM[0][0])return CAM[0];for(let i=0;i<CAM.length-1;i++){const a=CAM[i],b=CAM[i+1];if(t>=a[0]&&t<=b[0]){if(b[0]-a[0]<0.05)return b;const k=eIO(lin(t,a[0],b[0]));
+ return [t,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k,a[3]*Math.pow(b[3]/a[3],k)];}}return CAM[CAM.length-1];}
 const PINACT={1:[10.9,16],2:[15.9,20.6],3:[20.5,26.2],4:[29.13,40]};
+function renderMap(t){const [,cx,cy,s]=cam(t);const ox=540-cx*s, oy=1000-cy*s;
+  document.getElementById('mapimg').style.transform=`translate(${ox}px,${oy}px) scale(${s})`;
+  for(const p of placeEls){p.d.style.transform=`translate(${p.x*s+ox}px,${p.y*s+oy}px) translate(-50%,-50%)`;p.d.style.opacity=(s<0.6?0.9:0.55)*(t>30.2&&t<33.6?0.3:1);}
+  for(const k of [1,2,3,4]){const d=pinEls[k];const [x,y]=PINS[k];const [a,bq]=PINACT[k];const act=t>=a&&t<bq;const visited=t>=bq;
+    d.style.transform=`translate(${x*s+ox}px,${y*s+oy}px)`;
+    const inA=eBack(lin(t,a,a+0.4)); const pulse=act?(1+0.18*Math.sin((t-a)*8)):1;
+    const cr=(act?30*pulse*(0.6+0.4*inA):(visited?20:15)); const core=d.querySelector('.core');
+    core.style.width=core.style.height=(2*cr)+'px';core.style.left=core.style.top=(-cr)+'px';core.style.fontSize=(cr*1.1)+'px';
+    core.style.background=(act||visited)?'#05F4E8':'rgba(150,190,200,.75)';
+    const ring=d.querySelector('.ring');const rr=act?34+((t-a)*70)%80:0;ring.style.width=ring.style.height=(2*rr)+'px';ring.style.left=ring.style.top=(-rr-5)+'px';ring.style.opacity=act?1-(((t-a)*70)%80)/80:0;
+    const recap=t>26.1&&t<29.13; d.querySelector('.lab').style.opacity=act?inA*(t>30.2?0:1):0;
+    d.style.opacity=(k==4&&t>26.1&&t<29.13)?(0.45+0.55*Math.abs(Math.sin(t*5))):1; } }
 
 /* ---------- BACKGROUNDS ---------- */
 const bgEls=TL.bgs.map(([src,i,o,dir])=>{let el;
@@ -217,17 +221,8 @@ window.render=function(t){
   // map
   const mw=document.getElementById('mapwrap'); let mop=0;
   for(const b of bgEls){ if(b.src!=='MAP')continue; mop=Math.max(mop,Math.min(lin(t,b.i,b.i+0.3),1-lin(t,b.o-0.3,b.o))); }
-  mw.style.opacity=mop*(t>30.2&&t<33.6?1-0.6*lin(t,30.2,30.7):1);
-  if(mop>0){ const [,cx,cy,s]=cam(t); document.getElementById('mapg').setAttribute('transform',`translate(${540-cx*s+ (cx-540)*0} ${1000-cy*s}) scale(${s})`);
-    document.getElementById('mgrid').style.transform=`translateY(${(t*30)%90}px)`;
-    for(const k of [1,2,3,4]){const g=document.getElementById('pin'+k);const [a,bq]=PINACT[k];const act=t>=a&&t<bq;const visited=t>=bq;
-      const pulse=act?(1+0.25*Math.sin((t-a)*8)):1; const ring=g.querySelector('.ring');
-      const inA=eBack(lin(t,a,a+0.4));
-      ring.setAttribute('r',act?40+((t-a)*60)%60:34); ring.setAttribute('opacity',act?1-((t-a)*60%60)/60:(visited?.6:.25));
-      g.querySelector('.core').setAttribute('r',act?22*pulse*(0.6+0.4*inA):(visited?18:14));
-      g.querySelector('.core').setAttribute('fill',act||visited?'#05F4E8':'#2D5566');
-      const lab=g.querySelector('.lab'); const recap=t>26.1&&t<29.13; lab.setAttribute('opacity',act?inA*(t>30.2?0:1):(visited&&recap?.7:0));
-      g.setAttribute('opacity', (k==4&&t>26.1&&t<29.13)? (0.5+0.5*Math.sin(t*10)) : 1); } }
+  mw.style.opacity=mop*(t>30.2&&t<33.6?1-0.45*lin(t,30.2,30.7):1);
+  if(mop>0) renderMap(t);
   // particles
   const dop=Math.max(mop, ...bgEls.filter(b=>b.src==='DARK').map(b=>Math.min(lin(t,b.i,b.i+.3),1-lin(t,b.o-.3,b.o))));
   for(const p of dots){p.d.style.opacity=.45*dop; const y=(p.y - t*40*p.s)%1920; p.d.style.transform=`translate(${p.x}px,${y<0?y+1920:y}px)`; p.d.style.width=p.d.style.height=p.sz+'px';}
