@@ -8,8 +8,8 @@ Kết quả trong <project>/assets/:
   det1.jpg, det2.jpg  ảnh chi tiết (zoom 14) quanh từng ghim, để zoom sâu không bị vỡ
   map_config.js       window.MAPCFG = {z,x0,y0,W,H,src,det:[{x,y,w,h,src}]}  (render.html đọc file này)
 
-Chọn bbox: khung dọc 9:16 ở toàn cảnh scale ~0.36 cần ~5300 px chiều cao ảnh ở z13
-=> vùng vĩ độ ~0.9–1.0°, kinh độ ~0.7–0.8°. Biển nên nằm ở mép phải (seafix giả định vậy).
+Chọn bbox bằng plan_map.py (in sẵn lệnh này). --sea cho biết biển chạm cạnh nào của ảnh (right mặc định | bottom | left | top | none;
+vùng nội địa không có biển: none). Nước đục phù sa/hồ không nhận ra được.
 Ghi nguồn trên video: "Ảnh vệ tinh: Esri, Maxar, Earthstar Geographics".
 """
 import argparse, math, os, json, ssl, urllib.request, concurrent.futures as cf, sys

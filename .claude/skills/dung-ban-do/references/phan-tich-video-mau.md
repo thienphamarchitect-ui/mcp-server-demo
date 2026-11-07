@@ -38,14 +38,22 @@ Xanh dương = nút giao thông thường; đỏ = nút giao nối KCN/cảng/s�
 V=video.mov; mkdir -p frames sheets
 ffprobe -v error -show_entries format=duration:stream=codec_name,width,height,r_frame_rate -of default=nw=1 $V
 ffmpeg -v error -i $V -vf "fps=1,scale=288:-1" frames/f_%03d.jpg        # f_001 = giây 0
-# contact sheet 12 khung (6x2) — sheet i, ô k (k=0..11, trái→phải, trên→dưới) = giây 12*i + k
-for i in 0 1 2 3 4; do ffmpeg -v error -y -start_number $((i*12+1)) -framerate 1 -i frames/f_%03d.jpg -vf tile=6x2 -frames:v 1 sheets/sheet_$i.jpg; done
+# contact sheet 12 khung (6x2): số tấm = ceil(độ_dài/12); sheet i, ô k (k=0..11, trái→phải, trên→dưới) ≈ giây 12*i + k
+N=$(python3 -c "import math;print(math.ceil($(ffprobe -v error -show_entries format=duration -of csv=p=0 $V)/12))")
+for i in $(seq 0 $((N-1))); do ffmpeg -v error -y -start_number $((i*12+1)) -framerate 1 -i frames/f_%03d.jpg -vf tile=6x2 -frames:v 1 sheets/sheet_$i.jpg; done
+# CHÚ Ý: fps=1 lấy khung gần đầu mỗi giây nên lệch tới ±0,5s so với mốc 'giây N'. Cần số chính xác (km, mốc nhãn) thì trích đúng giây: ffmpeg -ss N -i $V -frames:v 1 ...
 ffmpeg -i $V -vf "select='gt(scene,0.25)',showinfo" -f null - 2>&1 | grep -o "pts_time:[0-9.]*"   # điểm cắt cảnh; KHÔNG in gì = một cú máy liên tục (cũng là một kết luận)
 ffmpeg -ss 15 -i $V -frames:v 1 full15.png      # khung đủ độ phân giải để đọc HUD/nhãn (ô 288px thường không đọc nổi số km)
+# dải HUD km tại nhiều mốc, xếp chồng để đọc một lượt (chỉnh y/h theo vị trí thanh km trong video: ở video mẫu ~ y=800..870 trên khung 1024)
+for t in 6 12 20 28 36 44 46; do ffmpeg -v error -y -ss $t -i $V -frames:v 1 -vf "crop=iw:90:0:800,scale=iw*2:-1" km_$t.png; done
+ffmpeg -v error -y $(for t in 6 12 20 28 36 44 46; do echo -n "-i km_$t.png "; done) -filter_complex vstack=7 km_strip.png
+# vị trí các chấm ga trên thanh -> km: (x_chấm − x_đầu_thanh) / (x_cuối_thanh − x_đầu_thanh) × tổng_km; đọc x bằng PIL (cột pixel sáng/trắng dọc dải) rồi gán tên theo thứ tự nhãn xuất hiện — video không ghi tên trên thanh, nên gán là suy ra
+# lấy màu thật (hex): python3 -c "from PIL import Image;print('#%02X%02X%02X'%Image.open('full15.png').convert('RGB').getpixel((x,y)))" (lấy ở lõi nét, tránh viền mờ/glow)
 ffmpeg -i $V -af volumedetect -vn -f null -     # có âm thanh không
 ffmpeg -i $V -af silencedetect=noise=-40dB:d=1 -vn -f null - 2>&1 | grep silence   # khoảng lặng
 ffmpeg -i $V -af ebur128 -vn -f null - 2>&1 | grep -E 'I:|LRA:'               # độ to tích hợp
 ```
+Cảnh báo khi diễn giải: (1) scene-detect không in gì chỉ nói **không có cắt cứng** ở ngưỡng 0,25 — cú mờ chồng (dissolve) có thể lọt; xác nhận bằng contact sheet rằng khung liền mạch. (2) LUFS/LRA phẳng và không có khoảng lặng gợi ý nhạc nền liên tục nhưng **không chứng minh** có hay không lời bình; muốn biết thì nghe, hoặc đưa file (qua URL tải được) cho `audio_transcribe` xem có chữ không. Nói rõ phần nào chưa nghe.
 Xem từng sheet (Read ảnh), ghi lại: mốc thời gian từng giai đoạn, số km theo giây (để suy ra tốc độ), kiểu nhãn, màu, HUD. Âm thanh chỉ đo được mức to/khoảng lặng, không nghe được nội dung — nói rõ.
 
 **Khung trả lời cho người dùng:** (1) thông số + cái đã kiểm chứng; (2) cấu trúc theo giây; (3) tiết tấu (bảng km/giây); (4) các lớp hình ảnh; (5) video KHÔNG có gì; (6) công thức áp dụng + **khoảng cách với engine** (bảng bên dưới) + dữ liệu cần người dùng chuẩn bị; (7) phần chưa chắc (công cụ gốc, hex màu, âm thanh).
@@ -54,7 +62,7 @@ Xem từng sheet (Read ảnh), ghi lại: mốc thời gian từng giai đoạn,
 | Trong video mẫu | Engine `dung-ban-do` | Cách xử lý |
 |---|---|---|
 | Camera nghiêng ~60°, orbit | **Chưa có**: nhìn thẳng từ trên xuống, chỉ pan/zoom | chấp nhận nhìn từ trên xuống; hoặc thêm CSS `perspective/rotateX` cho lớp bản đồ (cần phát triển) |
-| Polygon khu vực tô viền theo màu | **Chưa có** | vẽ tạm bằng `rings` (khoanh bán kính) hoặc `raw()`; thêm vào engine nếu cần |
+| Polygon khu vực tô viền theo màu (đã xác nhận: vàng cam = KCN/khu kinh tế; **đỏ = Khu đô thị Chu Lai**; tím = cảng; cam = sân bay; **xanh lá = ranh Hội An + KĐT Vịnh An Hòa**; cyan = ranh Tam Kỳ) | **Chưa có** | vẽ tạm bằng `rings` (khoanh bán kính) hoặc `raw()`; thêm vào engine nếu cần |
 | Thẻ "KHU VỰC" trắng + sọc màu | Chưa có kiểu riêng | dùng `paper()`/`raw()` |
 | Thanh tiến độ km có chấm ga tỷ lệ thật | **Chưa có** | thêm vào engine, hoặc `raw()` + tự tính |
 | Logo cố định góc trên phải | Chưa có khoá riêng | `raw()` (ảnh `<img>`) hoặc `brand` |
