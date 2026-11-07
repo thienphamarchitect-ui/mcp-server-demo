@@ -1,14 +1,17 @@
 # Bài học và lỗi đã gặp khi dựng video bản đồ Metro Đà Nẵng – Chu Lai
 
 ## Hình ảnh
-- **Số có dấu chấm ngàn**: `count` định dạng kiểu Đức → năm 2027 thành "2.027". Năm và số không cần đếm thì dùng `line` tĩnh (anim `hero`). Chỉ dùng `count` cho số nhỏ (103, 95%, 24).
+- **Số có dấu chấm ngàn**: `count` định dạng kiểu Việt → năm 2027 thành "2.027". Năm và số không cần đếm thì dùng `line` tĩnh (anim `hero`). Số thập phân dùng tham số thứ 5: `count:[0,19.7,' KM',false,1]` → "19,7 KM" (trước đây bị làm tròn thành "20").
 - **Dấu mũ chạm nhãn phía trên**: số cap 150 có dấu (Á, Ố) vươn lên ~45px. Khoảng cách tâm nhãn → tâm số ≥ ~155px; tiêu đề nhỏ phía trên chữ hero lớn cách ≥ 0,9×cap.
 - **Ghi chú dài bị cắt mép**: `note`/`src` không tự thu nhỏ. ≤ 28px và ≤ ~60 ký tự; chia hai dòng nếu dài.
 - **Nhãn ghim đè chữ**: ở cảnh có nhiều chữ (kết video), bỏ nhãn ghim (`labwin` rỗng), chỉ để chấm. Vòng xung nằm sau chữ thì bỏ hoặc dời tâm.
 - **Dòng ghi nguồn ảnh vệ tinh đè dòng nguồn khác**: để credit ở `bottom:44px`, dòng `src` ở y ≤ 1745.
 - **Bản đồ tối, mờ**: ảnh vệ tinh vốn tối; engine đã tăng brightness 1,12 và giảm gradient. Đừng cộng thêm lớp phủ tối; dùng `dim` chỉ khi có thẻ đè.
-- **Mép biển có mảng sáng/răng cưa**: dùng `seafix.py` bản mới; kiểm tra thumbnail trước khi dựng.
-- **Tuyến chạy chéo làm lộ mép ảnh nền**: dùng `plan_map.py` để chọn bbox.
+- **Mép biển có mảng sáng/răng cưa**: dùng `seafix.py` bản mới với đúng `--sea` (biển ở phía nào của ảnh); kiểm tra thumbnail. Nước đục phù sa (Long Thành – cửa sông Mekong) vẫn còn mảng ghép ô; hai ca thử cho thấy tự dựng từ đầu đôi khi ra ảnh sạch hơn nhờ chọn mức zoom/nguồn khác.
+- **Tuyến chạy chéo làm lộ mép ảnh nền**: dùng `plan_map.py`; bản cũ chỉ phủ camera ở giữa tuyến nên khi camera bám tàu tới hai đầu tuyến vẫn lộ mép (phải tải lại 3 lần). Bản mới lấy hợp các vị trí camera và cộng lề 12%.
+- **Hai ghim cùng vĩ độ đè nhãn**: dùng `dy`/`dx` trên ghim thay vì vá engine.
+- **Vòng bán kính cố định** ("20 KM"): `rings:[{km:20,static:true,label:'20 KM'}]` — đừng tự đổi km sang px.
+- **Tự vẽ tuyến theo đường thật tốn thời gian** (~40% công việc ở ca Metro HCM): đặt lưới toạ độ lên ảnh nền, dò đường bằng mắt, chèn ga theo km tích luỹ nếu có (JICA/quy hoạch); dùng `route` dày (30+ điểm) cũng được.
 - **Cảnh nhiều chữ nên tối bản đồ (`dim`) và dùng nền DARK xen kẽ** để người xem nghỉ mắt; mỗi 10–15s đổi nền một lần.
 
 ## Giọng đọc (Speko)

@@ -10,10 +10,15 @@ const mode = process.argv[3] || 'preview';
 (async () => {
   const b = await chromium.launch();
   const p = await (await b.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 })).newPage();
-  p.on('pageerror', e => console.error('PAGE ERROR', e.message));
+  let pageErrors = 0;
+  p.on('pageerror', e => { pageErrors++; console.error('PAGE ERROR', e.message); });
   await p.goto('file://' + path.join(DIR, 'render.html'));
   await p.evaluate(() => document.fonts.ready);
   await p.waitForTimeout(800);
+  if (pageErrors || !(await p.evaluate(() => typeof window.render === 'function' && Array.isArray(window.SFX_LIST)))) {
+    console.error('LỖI: trang không nạp được. Xem dòng PAGE ERROR phía trên; kiểm tra cú pháp bằng: node --check scene.js engine.js timeline.js');
+    await b.close(); process.exit(1);
+  }
   await p.evaluate(() => window.fit && window.fit());
   fs.writeFileSync(path.join(DIR, 'sfx.json'), JSON.stringify(await p.evaluate(() => window.SFX_LIST)));
   if (mode === 'preview') {

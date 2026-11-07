@@ -33,14 +33,30 @@ Xanh dương = nút giao thông thường; đỏ = nút giao nối KCN/cảng/s�
 - Vòng tròn xung = "bán kính X km quanh dự án".
 
 ## 5. Cách phân tích một video mẫu mới
+**Nếu video mẫu chính là video được mô tả ở trên** (61s, 576x1024, logo L&D): coi các mục 1–4 là giả thuyết, vẫn trích khung để xác nhận vài số liệu (km theo giây, nhãn) rồi mới trả lời; đừng chép lại nguyên văn.
 ```bash
 V=video.mov; mkdir -p frames sheets
 ffprobe -v error -show_entries format=duration:stream=codec_name,width,height,r_frame_rate -of default=nw=1 $V
-ffmpeg -v error -i $V -vf "fps=1,scale=288:-1" frames/f_%03d.jpg
-# contact sheet 12 khung (6x2) mỗi tấm: start_number = i*12+1
-ffmpeg -v error -y -start_number 1 -framerate 1 -i frames/f_%03d.jpg -frames:v 12 -vf tile=6x2 sheets/sheet_0.jpg
-ffmpeg -i $V -vf "select='gt(scene,0.25)',showinfo" -f null - 2>&1 | grep -o "pts_time:[0-9.]*"   # điểm cắt cảnh
-ffmpeg -ss 15 -i $V -frames:v 1 full15.png      # khung đủ độ phân giải để xem chi tiết HUD/nhãn
-ffmpeg -i $V -af volumedetect -vn -f null -     # có âm thanh không (không nghe được nội dung)
+ffmpeg -v error -i $V -vf "fps=1,scale=288:-1" frames/f_%03d.jpg        # f_001 = giây 0
+# contact sheet 12 khung (6x2) — sheet i, ô k (k=0..11, trái→phải, trên→dưới) = giây 12*i + k
+for i in 0 1 2 3 4; do ffmpeg -v error -y -start_number $((i*12+1)) -framerate 1 -i frames/f_%03d.jpg -vf tile=6x2 -frames:v 1 sheets/sheet_$i.jpg; done
+ffmpeg -i $V -vf "select='gt(scene,0.25)',showinfo" -f null - 2>&1 | grep -o "pts_time:[0-9.]*"   # điểm cắt cảnh; KHÔNG in gì = một cú máy liên tục (cũng là một kết luận)
+ffmpeg -ss 15 -i $V -frames:v 1 full15.png      # khung đủ độ phân giải để đọc HUD/nhãn (ô 288px thường không đọc nổi số km)
+ffmpeg -i $V -af volumedetect -vn -f null -     # có âm thanh không
+ffmpeg -i $V -af silencedetect=noise=-40dB:d=1 -vn -f null - 2>&1 | grep silence   # khoảng lặng
+ffmpeg -i $V -af ebur128 -vn -f null - 2>&1 | grep -E 'I:|LRA:'               # độ to tích hợp
 ```
-Xem từng sheet (Read ảnh), ghi lại: mốc thời gian từng giai đoạn, số km theo giây (để suy ra tốc độ), kiểu nhãn, màu, HUD. Không nghe được audio thì nói rõ.
+Xem từng sheet (Read ảnh), ghi lại: mốc thời gian từng giai đoạn, số km theo giây (để suy ra tốc độ), kiểu nhãn, màu, HUD. Âm thanh chỉ đo được mức to/khoảng lặng, không nghe được nội dung — nói rõ.
+
+**Khung trả lời cho người dùng:** (1) thông số + cái đã kiểm chứng; (2) cấu trúc theo giây; (3) tiết tấu (bảng km/giây); (4) các lớp hình ảnh; (5) video KHÔNG có gì; (6) công thức áp dụng + **khoảng cách với engine** (bảng bên dưới) + dữ liệu cần người dùng chuẩn bị; (7) phần chưa chắc (công cụ gốc, hex màu, âm thanh).
+
+## 6. Khoảng cách giữa video mẫu và engine hiện có
+| Trong video mẫu | Engine `dung-ban-do` | Cách xử lý |
+|---|---|---|
+| Camera nghiêng ~60°, orbit | **Chưa có**: nhìn thẳng từ trên xuống, chỉ pan/zoom | chấp nhận nhìn từ trên xuống; hoặc thêm CSS `perspective/rotateX` cho lớp bản đồ (cần phát triển) |
+| Polygon khu vực tô viền theo màu | **Chưa có** | vẽ tạm bằng `rings` (khoanh bán kính) hoặc `raw()`; thêm vào engine nếu cần |
+| Thẻ "KHU VỰC" trắng + sọc màu | Chưa có kiểu riêng | dùng `paper()`/`raw()` |
+| Thanh tiến độ km có chấm ga tỷ lệ thật | **Chưa có** | thêm vào engine, hoặc `raw()` + tự tính |
+| Logo cố định góc trên phải | Chưa có khoá riêng | `raw()` (ảnh `<img>`) hoặc `brand` |
+| Tàu 4 toa, vệt neon, nhãn, ghim, vòng xung | **Có** (`train`, `pins`, `rings`) | dùng trực tiếp |
+| Ghim ga phụ không nhãn | Có (`dot:true`) | — |

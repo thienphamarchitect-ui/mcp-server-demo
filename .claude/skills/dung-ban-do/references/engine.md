@@ -25,28 +25,28 @@ render.html nạp: `assets/map_config.js` (MAPCFG do fetch_map.py tạo) → `ti
 | Khoá | Ý nghĩa |
 |---|---|
 | `brand` | `{t1,t2,loc,demo}`: tên + dòng phụ (góc trên trái), nhãn địa điểm (phải), nhãn "BẢN DEMO" (vàng). Bỏ khoá nào thì ẩn. |
-| `pins` | `[{id,lat,lon,label,side:'R'|'L'}]`. id hiện trong chấm. **Thứ tự phải khớp `--pins` của fetch_map.py** (ảnh chi tiết det1..N). |
+| `pins` | `[{id,lat,lon,label,side:'R'|'L',dy,dx,dot}]`. id hiện trong chấm. `dy/dx`: dời nhãn (px màn hình; dùng khi hai ghim cùng vĩ độ làm nhãn đè nhau). `dot:true`: chấm nhỏ không số (ga phụ). Ghim xám trước khi tàu qua, cyan sau; **không có `train` thì tất cả cyan ngay từ đầu**. Ảnh chi tiết det1..N **không gắn với id ghim** (xem mục 6). |
 | `route` | `[[lat,lon],...]` đi qua các ghim; vẽ bằng đường cong Catmull-Rom. `[]` nếu không có tuyến. Đây là tuyến **minh hoạ**: luôn ghi chú trên màn hình. |
 | `train` | `{t0,t1}`: tàu chạy hết tuyến trong khoảng này (tốc độ đều); vệt neon vẽ dần sau tàu; ghim chuyển cyan + xung khi tàu qua. `null` = không có tàu (ghim sáng sẵn). |
 | `places` | `[[tên,lat,lon,sMin,sMax]]` nhãn địa danh, chỉ hiện khi scale camera trong [sMin,sMax] (vd. 0–0.6 cho toàn cảnh, 1.3–9 khi zoom sâu). |
-| `rings` | `[{lat,lon,r,t0,t1,col}]` vòng xung 3 lớp; `r` là bán kính px **ảnh nền** (zoom MAPCFG.z; ~18 m/px ở z13 vĩ độ 16° → 230px ≈ 4,2 km). |
-| `labwin` | `{idGhim:[[a,b] | {pass:[da,db]}]}` cửa sổ hiện nhãn; `{pass}` tính từ lúc tàu qua ghim. |
+| `rings` | `[{lat,lon,r|km,t0,t1,col,static,label,labAng}]`. Mặc định là vòng xung 3 lớp nở tới 1,2R. `km` đổi sang px theo vĩ độ (hàm `kmToPx(km,lat)`); `r` là px ảnh nền. `static:true`: vòng bán kính **cố định** nét đứt + nền mờ + đường bán kính + nhãn `label` (đặt ở góc `labAng` độ, mặc định −35°, luôn nằm trong khung), sóng xung nở đúng tới R. |
+| `labwin` | `{idGhim:[[a,b] | {pass:[da,db]}]}` cửa sổ hiện nhãn; `{pass}` tính từ lúc tàu qua ghim. **Ghim không khai `labwin` thì không bao giờ hiện nhãn** (kể cả khi không có tàu). |
 | `dim` | `[[a,b]]` tối bản đồ 38% khi có thẻ/số liệu đè (nên dùng cho mọi đoạn có nhiều chữ). |
-| `ov` | `{scale, center}`: scale toàn cảnh (lấy từ plan_map.py), `center` [lat,lon] tuỳ chọn (mặc định tâm bbox tuyến). |
+| `ov` | `{scale, center}`: scale toàn cảnh (plan_map.py in sẵn `ov.scale` và `ov.center`). Không khai `center` thì lấy tâm bbox của tuyến, hoặc của các ghim nếu `route` rỗng. |
 | `credit` | dòng ghi nguồn ảnh (mặc định Esri); `''` để ẩn. |
 
 ## 3. Camera
 Tâm khung đặt ở (540, 1000). `cam` gồm ba pha nối tiếp:
 1. **Toàn cảnh** từ 0 đến đầu pha sau, đẩy chậm `push` (mặc định +10%).
 2. **Bám tàu** (`follow:[tBắtĐầu,tKếtThúc,giâyZoomVào,scale]`): camera trượt từ toàn cảnh tới vị trí tàu, rồi đi theo (nhìn trước 2% chiều dài).
-3. **Keyframe** `keys:[[t,đích,scale],...]`: vị trí easeInOut, scale nội suy mũ (zoom đều mắt). Đích: `'OV'` toàn cảnh, id ghim, `'END'` cuối tuyến, `[lat,lon,dyPx]`, `{px:[x,y]}`.
+3. **Keyframe** `keys:[[t,đích,scale],...]`: vị trí easeInOut, scale nội suy mũ (zoom đều mắt). Đích: `'OV'` toàn cảnh, id ghim, `'END'` cuối tuyến, `[lat,lon,dyPx]`, `{px:[x,y]}`. `dyPx` > 0 làm camera nhìn thấp hơn điểm đó, tức nội dung **dời lên** trên khung (dùng để chừa chỗ cho thẻ phía dưới); < 0 dời xuống.
 Mẫu bay kiểu Google Earth: toàn cảnh → zoom vào vị trí (scale 1,9–2,3 dùng ảnh chi tiết z14) → đẩy chậm trong lúc hiện số liệu → zoom ra.
 Ảnh chi tiết (det*.jpg) tự hiện khi scale > 1,05 (đủ nét ở 2,3). Cảnh nền chuyển MAP → DARK → MAP: camera giữa hai cảnh bản đồ không nhìn thấy, tự nội suy; chỉ cần keyframe đầu của cảnh bản đồ sau đặt đúng vị trí mong muốn.
 
 ## 4. Phần tử chữ/thẻ (toạ độ y = tâm; khung 1080x1920; chừa ~250px đáy cho giao diện nền tảng)
 | Hàm | Dùng cho |
 |---|---|
-| `line(text,cls,cap,y,tin,tout,opt)` | chữ/số IN HOA. `cls`: `'w'` trắng, `'c'` cyan, `'r'` đỏ. `cap` = chiều cao chữ hoa (px). `anim`: `track` (mặc định), `hero` (phóng 1,7→1), `count` (`count:[from,to,suffix,plus]`), `pulse`. `sfx`/`g` đổi âm. Tự thu nhỏ nếu rộng > 950px. |
+| `line(text,cls,cap,y,tin,tout,opt)` | chữ/số IN HOA. `cls`: `'w'` trắng, `'c'` cyan, `'r'` đỏ. `cap` = chiều cao chữ hoa (px). `anim`: `track` (mặc định), `hero` (phóng 1,7→1), `count` (`count:[from,to,suffix,plus,decimals]`; `decimals:1` cho "19,7"; định dạng Việt 1.234,5; **không dùng cho năm** vì ra "2.027"), `pulse`. `sfx`/`g` đổi âm. Tự thu nhỏ nếu rộng > 950px. |
 | `paper(img,tag,y,w,tin,tout,rot,{dark})` | thẻ ảnh báo trắng + nhãn nguồn đỏ ("TÊN BÁO · NGÀY"). |
 | `chip(icon,text,y,tin,tout)` | viên thuốc gạch đầu dòng, trượt từ trái. Text ≤ ~22 ký tự. |
 | `src(text,y,tin,tout)` / `note(text,y,tin,tout)` | dòng nguồn 30px / ghi chú 28px (không tự thu nhỏ: ≤ ~60 ký tự). |
@@ -56,15 +56,19 @@ Mẫu bay kiểu Google Earth: toàn cảnh → zoom vào vị trí (scale 1,9�
 
 ## 5. timeline.js, âm thanh, SFX
 Xem chú thích đầu `assets/template/timeline.js`. `drop` nên đặt vào câu chốt/tiêu đề chính (nhạc vào full beat + impact + flash). `audio.py` mix giọng + nhạc tổng hợp (Am–F–C–G, 100 BPM) + SFX, ducking nhạc dưới giọng, loudnorm −14 LUFS.
+**Video không giọng đọc / cảnh ngắn:** `"vo": []` hợp lệ — `make_video.sh` cho ra MP4 chỉ nhạc + SFX. Với cảnh ~12s: `"drop":4.8, "music":{"start":0.3,"beatsFrom":2.0,"breakdown":[3.4,4.65],"outro":9.5}` (drop ≈ 40% độ dài, outro cách cuối ~2,5s). Xem `assets/example-ring/`.
+**Khung cuối:** engine làm mờ dần sang đen trong 0,6s cuối (`TL.total`); khi trích ảnh xem trước nên lấy trước mốc đó.
+**Nhãn `places` không có giới hạn mép khung** — khi zoom sâu có thể bị cắt; chỉ bật nhãn địa danh ở khoảng scale phù hợp (`sMin,sMax`).
 SFX có sẵn: `whoosh pop ting impact riser shutter heartbeat notify cash sparkle`.
 Gắn: whoosh cho chuyển cảnh/zoom ra; pop chữ trắng; ting giá trị cyan; impact số lớn; riser trước drop; shutter khi thẻ báo vào; sparkle cho tên/CTA.
 
 ## 6. Kích thước ảnh nền
-Ở scale `s`, ảnh nền phải phủ `540/s` px sang hai bên, `1000/s` px lên trên và `920/s` px xuống dưới tính từ tâm camera, nếu không mép ảnh lộ nền navy. Tuyến chạy chéo nên bbox "vừa tuyến" luôn thiếu, nhất là chiều dọc.
-`python3 scripts/plan_map.py --route "lat,lon;lat,lon;..."` tính sẵn scale + bbox + lệnh `fetch_map.py`. (Metro Đà Nẵng – Chu Lai: tuyến 2948x3858px ở z13 → s=0,32 → bbox LAT 15,25–16,25 × LON 108,10–108,78 → ảnh 4352x6144, ~420 ô.)
-`seafix.py` làm đồng màu mặt biển, giả định biển ở mép **phải**. Bản đầu (ngưỡng chặt) để lại các mảng sáng hình chữ nhật ven bờ; bản hiện tại nới ngưỡng và giãn mặt nạ 1 vòng — vẫn mất vài đảo nhỏ. Kiểm tra thumbnail sau khi tải.
+Ở scale `s`, ảnh nền phải phủ `540/s` px sang hai bên, `1000/s` px lên trên và `920/s` px xuống dưới tính từ tâm camera, nếu không mép ảnh lộ nền navy. Tâm camera không chỉ ở giữa tuyến: pha bám tàu đi qua **mọi điểm của tuyến** ở scale follow (1,15–1,4), zoom sâu vào một điểm thì scale 1,9–2,3, nên vùng cần phủ là **hợp** của các trường hợp đó.
+`python3 scripts/plan_map.py --route "lat,lon;..." [--follow-scale 1.15] [--extra "lat,lon;..." --extra-scale 2.0] [--ring "lat,lon,km"]` tính sẵn `ov.scale`, `ov.center`, bbox (đã cộng đủ lề) và lệnh `fetch_map.py`. Cảnh không có tàu bám: `--follow-scale 0`. **Ảnh chi tiết det1..N** (ô z+1) chỉ là ảnh tự hiện khi scale > 1,05 quanh các điểm `--pins`; không liên quan tới id ghim trong scene.js. Chọn `--pins` là những nơi sẽ zoom sâu; ngoài vùng ±~500px quanh điểm đó ảnh chi tiết hết (không zoom quá ~2,3). (Metro Đà Nẵng – Chu Lai: tuyến 2948x3858px ở z13 → s=0,32 → bbox LAT 15,25–16,25 × LON 108,10–108,78 → ảnh 4352x6144, ~420 ô.)
+`seafix.py --sea right|left|top|bottom|none` (và `fetch_map.py --sea ...`) làm đồng màu mặt biển; chọn cạnh ảnh mà biển chạm vào (mặc định `right`; có thể ghép `right,bottom`). Nước đục phù sa (cửa sông Mekong…) và hồ không nhận ra được — vẫn còn mảng ghép ô ở đó; chấp nhận hoặc che bằng nhãn. Bản đầu (ngưỡng chặt) để lại các mảng sáng hình chữ nhật ven bờ; bản hiện tại nới ngưỡng và giãn mặt nạ 1 vòng — vẫn mất vài đảo nhỏ. Kiểm tra thumbnail sau khi tải.
 
 ## 7. Lệnh render
+(`render.js` dừng ngay với thông báo rõ nếu trang có lỗi JS; kiểm cú pháp: `node --check scene.js engine.js timeline.js`.)
 ```bash
 node scripts/render.js <project> preview 3.5 14.9 29.2          # xem nhanh vài thời điểm -> <project>/prev/t*.jpg
 bash scripts/make_video.sh <project> out_v1.mp4                 # render đủ (3 tiến trình) + mix + MP4; 84s ≈ 6 phút -> chạy nền

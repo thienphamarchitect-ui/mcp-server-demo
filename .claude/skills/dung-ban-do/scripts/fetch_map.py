@@ -21,6 +21,7 @@ ap.add_argument('--pins', default=''); ap.add_argument('--zoom', type=int, defau
 ap.add_argument('--detail-zoom', type=int, default=14); ap.add_argument('--half', nargs=2, type=float, default=[470, 820],
                 help='nửa kích thước vùng chi tiết quanh ghim, px theo zoom nền')
 ap.add_argument('--no-seafix', action='store_true')
+ap.add_argument('--sea', default='right', help='cạnh ảnh mà biển chạm vào: right|left|top|bottom (ghép bằng dấu phẩy) hoặc none')
 A = ap.parse_args()
 P = os.path.abspath(A.project); AS = os.path.join(P, 'assets'); os.makedirs(AS, exist_ok=True)
 CACHE = os.path.join(P, 'tilecache'); os.makedirs(CACHE, exist_ok=True)
@@ -67,7 +68,7 @@ if A.no_seafix:
     for i in range(1, len(pins) + 1): shutil.copy(os.path.join(AS, f'det{i}_raw.jpg'), os.path.join(AS, f'det{i}.jpg'))
 else:
     from seafix import fix
-    fix(raw, os.path.join(AS, 'map_sat_clean.jpg'))
-    for i in range(1, len(pins) + 1): fix(os.path.join(AS, f'det{i}_raw.jpg'), os.path.join(AS, f'det{i}.jpg'))
+    fix(raw, os.path.join(AS, 'map_sat_clean.jpg'), sea=A.sea)
+    for i in range(1, len(pins) + 1): fix(os.path.join(AS, f'det{i}_raw.jpg'), os.path.join(AS, f'det{i}.jpg'), sea=A.sea)
 open(os.path.join(AS, 'map_config.js'), 'w').write('window.MAPCFG = ' + json.dumps(cfg) + ';\n')
 print('map_config.js:', json.dumps(cfg)[:300])

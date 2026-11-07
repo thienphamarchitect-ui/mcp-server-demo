@@ -2,7 +2,11 @@ import sys, numpy as np
 from PIL import Image, ImageFilter
 from scipy import ndimage
 SEA = np.array([14, 38, 58], np.float32)
-def fix(src, dst, ds=4):
+def fix(src, dst, ds=4, sea='right'):
+    # sea: các cạnh ảnh mà biển chạm vào, phân tách bằng dấu phẩy: right,left,top,bottom hoặc 'none' (chỉ copy)
+    sides = [x.strip() for x in str(sea).split(',') if x.strip()]
+    if sides == ['none']:
+        import shutil; shutil.copy(src, dst); return
     im = Image.open(src).convert('RGB'); W, H = im.size
     sm = np.asarray(im.resize((W // ds, H // ds), Image.BILINEAR)).astype(np.float32)
     R, G, B = sm[..., 0], sm[..., 1], sm[..., 2]; lum = .3 * R + .59 * G + .11 * B
@@ -12,7 +16,13 @@ def fix(src, dst, ds=4):
     green = (G > B + 6) | (G > R + 14)
     cand = ((std < 9) & ~sand & ~green & (B >= R - 6)) | seaish
     lab, n = ndimage.label(cand)
-    edge = np.unique(np.concatenate([lab[:, -3:].ravel(), lab[:3, W // ds // 2:].ravel(), lab[-3:, W // ds * 2 // 3:].ravel()]))
+    seeds = []                                                           # vùng nối với cạnh biển
+    if 'right' in sides: seeds += [lab[:, -3:].ravel(), lab[:3, W // ds // 2:].ravel(), lab[-3:, W // ds * 2 // 3:].ravel()]
+    if 'left' in sides: seeds += [lab[:, :3].ravel(), lab[:3, :W // ds // 2].ravel(), lab[-3:, :W // ds // 3].ravel()]
+    if 'bottom' in sides: seeds += [lab[-3:, :].ravel()]
+    if 'top' in sides: seeds += [lab[:3, :].ravel()]
+    if not seeds: seeds = [lab[:, -3:].ravel()]
+    edge = np.unique(np.concatenate(seeds))
     edge = edge[edge > 0]
     sizes = ndimage.sum(np.ones_like(lab), lab, edge)
     keep = edge[sizes > 400]
@@ -32,4 +42,7 @@ def fix(src, dst, ds=4):
     out = a * (1 - k * .96) + SEA * (k * .96)
     Image.fromarray(out.clip(0, 255).astype(np.uint8)).save(dst, quality=87)
 if __name__ == '__main__':
-    for s, d in zip(sys.argv[1::2], sys.argv[2::2]): fix(s, d); print('ok', d)
+    # python3 seafix.py [--sea right|left|top|bottom|none] in1.jpg out1.jpg [in2.jpg out2.jpg ...]
+    a = sys.argv[1:]; sea = 'right'
+    if a and a[0] == '--sea': sea = a[1]; a = a[2:]
+    for s, d in zip(a[0::2], a[1::2]): fix(s, d, sea=sea); print('ok', d)

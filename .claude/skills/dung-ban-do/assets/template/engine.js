@@ -28,6 +28,9 @@ function geo(lat, lon) {                       // lat/lon -> toạ độ px tron
   const y = (1 - Math.log(Math.tan(la) + 1 / Math.cos(la)) / Math.PI) / 2 * n;
   return [(x - MX0) * 256, (y - MY0) * 256];
 }
+// km -> px ảnh nền ở vĩ độ lat (Web Mercator, ô 256px): m/px = 156543.03 * cos(lat) / 2^z
+const kmToPx = (km, lat) => km * 1000 / (156543.03392804097 * Math.cos(lat * Math.PI / 180) / 2 ** MZ);
+window.kmToPx = kmToPx;
 function smoothPath(pts) {                     // Catmull-Rom -> Bezier: đường cong mượt qua các điểm
   let d = `M${pts[0][0]},${pts[0][1]}`;
   for (let i = 0; i < pts.length - 1; i++) {
@@ -53,7 +56,7 @@ function initEngine(cfg) {
   document.getElementById('loc').textContent = b.loc || ''; document.getElementById('loc').style.display = b.loc ? '' : 'none';
   document.getElementById('demo').textContent = b.demo || ''; document.getElementById('demo').style.display = b.demo ? '' : 'none';
   // --- dữ liệu hình học ---
-  (cfg.pins || []).forEach(p => { PINS[p.id] = [...geo(p.lat, p.lon), p.label, p.side || 'L']; });
+  (cfg.pins || []).forEach(p => { PINS[p.id] = [...geo(p.lat, p.lon), p.label, p.side || 'L', p.dy || 0, p.dx || 0, !!p.dot]; });
   ROUTE = (cfg.route || []).map(p => geo(p[0], p[1]));
   const RD = ROUTE.length ? smoothPath(ROUTE) : '';
   const allPts = ROUTE.length ? ROUTE : Object.values(PINS).map(p => p.slice(0, 2));
@@ -95,11 +98,11 @@ ${credit ? `<div style="position:absolute;right:40px;bottom:44px;color:rgba(255,
   for (const k of Object.keys(PINS)) {
     LABWIN[k] = ((cfg.labwin || {})[k] || []).map(w => Array.isArray(w) ? w : [pinT[k] + w.pass[0], pinT[k] + w.pass[1]]);
   }
-  for (const [k, [x, y, l, side]] of Object.entries(PINS)) {
+  for (const [k, [x, y, l, side, ldy, ldx, dot]] of Object.entries(PINS)) {
     const d = document.createElement('div'); d.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0'; const right = side === 'R';
     d.innerHTML = `<div class="ring" style="position:absolute;border:5px solid #05F4E8;border-radius:50%"></div>
- <div class="core" style="position:absolute;border-radius:50%;background:#05F4E8;box-shadow:0 0 30px #05F4E8,0 0 8px #fff;display:flex;align-items:center;justify-content:center;color:#06121C;font-family:SS;font-weight:900"><span>${k}</span></div>
- <div class="lab" style="position:absolute;top:-34px;${right ? 'left:60px' : 'right:60px'};white-space:nowrap;background:rgba(6,18,28,.88);border:3px solid #05F4E8;border-radius:14px;padding:8px 20px;color:#fff;font-family:SS;font-weight:900;font-size:34px;box-shadow:0 10px 30px rgba(0,0,0,.5)"><span style="display:inline-block;transform:scaleX(.86);transform-origin:${right ? 'left' : 'right'}">${l}</span></div>`;
+ <div class="core" style="position:absolute;border-radius:50%;background:#05F4E8;box-shadow:0 0 30px #05F4E8,0 0 8px #fff;display:flex;align-items:center;justify-content:center;color:#06121C;font-family:SS;font-weight:900"><span>${dot ? '' : k}</span></div>
+ <div class="lab" style="position:absolute;top:${-34 + ldy}px;${right ? `left:${60 + ldx}px` : `right:${60 + ldx}px`};white-space:nowrap;background:rgba(6,18,28,.88);border:3px solid #05F4E8;border-radius:14px;padding:8px 20px;color:#fff;font-family:SS;font-weight:900;font-size:34px;box-shadow:0 10px 30px rgba(0,0,0,.5)"><span style="display:inline-block;transform:scaleX(.86);transform-origin:${right ? 'left' : 'right'}">${l}</span></div>`;
     document.getElementById('pins').appendChild(d); pinEls[k] = d;
   }
   // --- nhãn địa danh: [tên, lat, lon, sMin, sMax] — chỉ hiện khi scale camera nằm trong [sMin,sMax] ---
@@ -109,9 +112,17 @@ ${credit ? `<div style="position:absolute;right:40px;bottom:44px;color:rgba(255,
     d.textContent = n; document.getElementById('places').appendChild(d); return { d, x, y, smin, smax };
   });
   // --- vòng xung (radar): {lat,lon,r(px ảnh nền),t0,t1,col} ---
-  RINGS = (cfg.rings || []).map(r => ({ ...r, c: geo(r.lat, r.lon), col: r.col || '#FFE600' }));
-  const ringG = document.getElementById('rings');
-  for (const R of RINGS) R.els = [0, 1, 2].map(() => { const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c.setAttribute('cx', R.c[0]); c.setAttribute('cy', R.c[1]); c.setAttribute('fill', 'none'); c.setAttribute('stroke', R.col); ringG.appendChild(c); return c; });
+  RINGS = (cfg.rings || []).map(r => ({ ...r, c: geo(r.lat, r.lon), r: r.km ? kmToPx(r.km, r.lat) : r.r, col: r.col || '#FFE600' }));
+  const ringG = document.getElementById('rings'), NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); ringG.appendChild(e); return e; };
+  for (const R of RINGS) {
+    if (R.static) {                              // vòng bán kính cố định: nét đứt + nền mờ + đường bán kính + nhãn
+      R.base = mk('circle', { cx: R.c[0], cy: R.c[1], fill: R.col, 'fill-opacity': 0.06, stroke: R.col, 'stroke-linecap': 'round' });
+      R.spoke = mk('line', { x1: R.c[0], y1: R.c[1], stroke: R.col, 'stroke-linecap': 'round' });
+      if (R.label) { R.lab = document.createElement('div'); R.lab.style.cssText = 'position:absolute;left:0;top:0;white-space:nowrap;background:#FFE600;color:#06121C;font-family:SS;font-weight:900;font-size:34px;padding:6px 20px;border-radius:30px;box-shadow:0 8px 24px rgba(0,0,0,.5);transform-origin:0 0'; R.lab.innerHTML = `<span style="display:inline-block;transform:scaleX(.86)">${R.label}</span>`; document.getElementById('places').appendChild(R.lab); }
+    }
+    R.els = [0, 1, 2].map(() => mk('circle', { cx: R.c[0], cy: R.c[1], fill: 'none', stroke: R.col }));
+  }
   DIM = cfg.dim || [];
   KEYS = ((cfg.cam || {}).keys || []).map(([t, tg, s]) => { const p = target(tg); return [t, p[0], p[1], s]; });
   // --- nền ---
@@ -163,18 +174,28 @@ function renderMap(t) {
     trainEl.setAttribute('transform', `translate(${q.x},${q.y}) rotate(${ang}) scale(${1 / s})`);
     trainEl.style.opacity = lin(t, TRAIN.t0 - 0.3, TRAIN.t0) * (1 - lin(t, TRAIN.t1 + 0.3, TRAIN.t1 + 1.2));
   }
-  for (const R of RINGS) R.els.forEach((c, i) => {
-    const on = t >= R.t0 && t < R.t1; if (!on) { c.style.display = 'none'; return; } c.style.display = '';
-    const ph = (((t - R.t0) * 0.55 + i / 3) % 1); c.setAttribute('r', R.r * (0.25 + 0.95 * ph)); c.setAttribute('stroke-width', sw(5));
-    c.style.opacity = (1 - ph) * lin(t, R.t0, R.t0 + 0.4) * (1 - lin(t, R.t1 - 0.4, R.t1));
-  });
+  for (const R of RINGS) {
+    const on = t >= R.t0 && t < R.t1, vis = on ? lin(t, R.t0, R.t0 + 0.5) * (1 - lin(t, R.t1 - 0.4, R.t1)) : 0;
+    if (R.static) {
+      R.base.style.display = R.spoke.style.display = on ? '' : 'none';
+      R.base.setAttribute('r', R.r); R.base.setAttribute('stroke-width', sw(4)); R.base.setAttribute('stroke-dasharray', `${sw(26)} ${sw(16)}`); R.base.style.opacity = vis;
+      const a = (R.labAng === undefined ? -35 : R.labAng) * Math.PI / 180, ex = R.c[0] + R.r * Math.cos(a), ey = R.c[1] + R.r * Math.sin(a);
+      R.spoke.setAttribute('x2', ex); R.spoke.setAttribute('y2', ey); R.spoke.setAttribute('stroke-width', sw(3)); R.spoke.setAttribute('stroke-dasharray', `${sw(12)} ${sw(10)}`); R.spoke.style.opacity = vis * 0.9;
+      if (R.lab) { const lx = clamp(ex * s + ox, 130, 950), ly = clamp(ey * s + oy, 260, 1640); R.lab.style.transform = `translate(${lx}px,${ly}px) translate(-50%,-50%)`; R.lab.style.opacity = on ? vis : 0; }   // nhãn luôn nằm trong khung
+    }
+    R.els.forEach((c, i) => {                    // sóng xung: ring thường nở tới 1,2R; ring static nở đúng tới R
+      if (!on) { c.style.display = 'none'; return; } c.style.display = '';
+      const ph = (((t - R.t0) * 0.55 + i / 3) % 1); c.setAttribute('r', R.static ? R.r * (0.15 + 0.85 * ph) : R.r * (0.25 + 0.95 * ph)); c.setAttribute('stroke-width', sw(5));
+      c.style.opacity = (1 - ph) * vis;
+    });
+  }
   // ghim: xám trước khi tàu qua, cyan + xung khi tàu tới, nhãn theo cửa sổ thời gian
   const tEnd = TRAIN ? TRAIN.t1 : -1;
   for (const k of Object.keys(PINS)) {
     const d = pinEls[k], [x, y] = PINS[k]; d.style.transform = `translate(${x * s + ox}px,${y * s + oy}px)`;
     const lit = t >= pinT[k] || t >= tEnd, act = TRAIN ? (t >= pinT[k] && t < pinT[k] + 1.3) : false;
     const inA = eBack(lin(t, pinT[k], pinT[k] + 0.4)), pulse = act ? (1 + 0.18 * Math.sin((t - pinT[k]) * 8)) : 1;
-    const cr = act ? 30 * pulse * (0.6 + 0.4 * inA) : (lit ? 20 : 14), core = d.querySelector('.core');
+    const cr = (act ? 30 * pulse * (0.6 + 0.4 * inA) : (lit ? 20 : 14)) * (PINS[k][6] ? 0.55 : 1), core = d.querySelector('.core');
     core.style.width = core.style.height = (2 * cr) + 'px'; core.style.left = core.style.top = (-cr) + 'px'; core.style.fontSize = (cr * 1.1) + 'px';
     core.style.background = lit ? '#05F4E8' : 'rgba(150,190,200,.75)';
     const ring = d.querySelector('.ring'), ph = ((t - pinT[k]) * 70) % 80, rr = act ? 34 + ph : 0;
@@ -186,7 +207,8 @@ function renderMap(t) {
 
 /* ---------- phần tử chữ / thẻ (gọi trong scene.js) ---------- */
 const E = []; const els = document.getElementById('els');
-// line(text, cls 'w'|'c'|'r', cap(px chiều cao chữ hoa), y(tâm), tin, tout, {anim:'track'|'hero'|'count'|'pulse', count:[from,to,suffix,plus], sfx, g})
+// line(text, cls 'w'|'c'|'r', cap(px chiều cao chữ hoa), y(tâm), tin, tout, {anim:'track'|'hero'|'count'|'pulse', count:[from,to,suffix,plus,decimals], sfx, g})
+// count: số có dấu chấm ngàn (2.027) KHÔNG dùng cho năm — dùng line tĩnh. decimals=1 cho '19,7'.
 function line(text, cls, cap, y, tin, tout, opt = {}) {
   const el = document.createElement('div'); el.className = 'line ' + cls; const fs = cap / 0.66;
   el.style.fontSize = fs + 'px'; el.style.top = (y - fs * 0.27 - cap / 2) + 'px'; el.style.height = fs + 'px'; el.style.lineHeight = fs + 'px';
@@ -205,12 +227,16 @@ function src(text, y, tin, tout) { const el = document.createElement('div'); el.
 function note(text, y, tin, tout) { const el = document.createElement('div'); el.className = 'note'; el.style.top = y + 'px'; el.textContent = text; els.appendChild(el); E.push({ type: 'fade', el, tin, tout }); }
 function raw(html, tin, tout, type = 'fade') { const d = document.createElement('div'); d.innerHTML = html; const el = d.firstElementChild; els.appendChild(el); E.push({ type, el, tin, tout }); return el; }
 
-function fmtNum(v, suf, plus) { const n = Math.round(v); const s = Math.abs(n).toLocaleString('de-DE'); return (n < 0 ? '-' : (plus && n > 0 ? '+' : '')) + s + suf; }
+// dec = số chữ số thập phân (mặc định 0). Định dạng Việt: 1.234,5 — tự viết để không phụ thuộc ICU của Chromium.
+function fmtNum(v, suf, plus, dec = 0) {
+  const f = Math.abs(v).toFixed(dec), [ip, fp] = f.split('.'), neg = v < 0 && +f > 0;
+  return (neg ? '-' : (plus && +f > 0 ? '+' : '')) + ip.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (fp ? ',' + fp : '') + suf;
+}
 // thu nhỏ dòng nào rộng > 950px (render.js gọi 1 lần sau khi nạp trang)
 window.fit = function () {
   for (const e of E) {
     if (e.type !== 'line') continue; const el = e.el, sp = el.querySelector('span'); el.style.display = ''; const txt = sp.textContent;
-    if (e.count) sp.textContent = fmtNum(e.count[1], e.count[2], e.count[3]);
+    if (e.count) sp.textContent = fmtNum(e.count[1], e.count[2], e.count[3], e.count[4]);
     const w = sp.getBoundingClientRect().width; sp.textContent = txt;
     if (w > 950) { const fs = e.fs * 950 / w; el.style.fontSize = fs + 'px'; el.style.height = fs + 'px'; el.style.lineHeight = fs + 'px'; el.style.top = (e.y - fs * 0.27 - fs * 0.66 / 2) + 'px'; }
     el.style.display = 'none';
@@ -236,7 +262,7 @@ window.render = function (t) {
       if (e.anim === 'track') { const x = eExpo(clamp(k / 0.45)); sp.style.letterSpacing = ((1 - x) * 0.55) + 'em'; el.style.filter = `blur(${(1 - x) * 10}px)`; op *= clamp(k / 0.15); el.style.transform = ''; }
       else if (e.anim === 'hero' || e.anim === 'count') {
         const x = eExpo(clamp(k / 0.35)); el.style.transform = `scale(${1.7 - 0.7 * x})`; el.style.filter = `blur(${(1 - x) * 8}px)`; op *= clamp(k / 0.12); sp.style.letterSpacing = '0';
-        if (e.count) { const [a, b, suf] = e.count; const c = eOut(clamp(k / 0.7)); sp.textContent = fmtNum(a + (b - a) * c, suf, e.count[3]); }
+        if (e.count) { const [a, b, suf] = e.count; const c = eOut(clamp(k / 0.7)); sp.textContent = fmtNum(a + (b - a) * c, suf, e.count[3], e.count[4]); }
       } else if (e.anim === 'pulse') { const s = 1 + 0.06 * Math.sin(k * 9); el.style.transform = `scale(${s})`; op *= clamp(k / 0.2) * (0.75 + 0.25 * Math.sin(k * 9)); }
       el.style.opacity = op;
     } else if (e.type === 'paper') {
