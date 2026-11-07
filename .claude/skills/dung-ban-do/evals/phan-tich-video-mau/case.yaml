@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: phan-tich-video-mau
+expected_outcome: |
+  Phân tích có dẫn chứng theo mốc thời gian: các giai đoạn, các lớp hình ảnh (ảnh vệ tinh, tuyến phát sáng, tàu, nhãn, HUD thanh tiến độ km), tiết tấu tốc độ không đều, cách làm/công cụ (nêu rõ là suy luận), và cách áp dụng; nói rõ không nghe được âm thanh.
