@@ -5,8 +5,10 @@
         --voice-name "Giọng Linh" [--pod <podId>] [--start N] [--only 3,5]
   python3 voicestudio_tts.py --base ... --list          # chỉ liệt kê giọng (id + tên)
 
-Khoá lấy từ biến môi trường, KHÔNG nhận qua tham số và không bao giờ in ra:
-  VOICESTUDIO_API_KEY  (bắt buộc)   RUNPOD_API_KEY  (chỉ cần nếu pod đang tắt và có --pod)
+Khoá KHÔNG nhận qua tham số và không bao giờ in ra. Hai cách cấp khoá:
+  (a) credential theo tên miền trong cài đặt môi trường (proxy tự thay header Authorization): script gửi header giả 'Bearer proxy-injects';
+  (b) biến môi trường VOICESTUDIO_API_KEY (+ RUNPOD_API_KEY nếu pod đang tắt và có --pod).
+  Nhận 401 nghĩa là khoá chưa được áp dụng cho phiên này (credential mới thêm chỉ có hiệu lực ở phiên mới).
 Pod RunPod tự tắt sau ~5 phút rảnh: /health lỗi + có --pod + có RUNPOD_API_KEY thì script gọi
 POST https://rest.runpod.io/v1/pods/<pod>/start rồi chờ /health (tối đa 5 phút).
 Mạng cần mở tới 2 tên miền: rest.runpod.io và <podid>-3900.proxy.runpod.net.
@@ -21,7 +23,7 @@ ap.add_argument('--model', default='tts-1'); ap.add_argument('--format', default
 ap.add_argument('--start', type=int, default=1, help='số thứ tự của dòng đầu (mặc định 1)'); ap.add_argument('--only', default='', help='chỉ tạo các số này, vd. 3,5')
 ap.add_argument('--list', action='store_true'); ap.add_argument('--speed', type=float, default=0, help='nếu API hỗ trợ tham số speed (0 = bỏ qua)')
 A = ap.parse_args()
-BASE = A.base.rstrip('/'); KEY = os.environ.get('VOICESTUDIO_API_KEY', ''); RK = os.environ.get('RUNPOD_API_KEY', '')
+BASE = A.base.rstrip('/'); KEY = os.environ.get('VOICESTUDIO_API_KEY') or 'proxy-injects'; RK = os.environ.get('RUNPOD_API_KEY') or 'proxy-injects'
 CA = os.environ.get('SSL_CERT_FILE') or ('/root/.ccr/ca-bundle.crt' if os.path.exists('/root/.ccr/ca-bundle.crt') else None)
 CTX = ssl.create_default_context(cafile=CA) if CA else ssl.create_default_context()
 
@@ -40,17 +42,18 @@ def healthy():
     c, b = req('GET', BASE + '/health', timeout=20); return c == 200
 
 if not healthy():
-    if A.pod and RK:
+    if A.pod:
         print('Pod chưa sẵn sàng -> gọi start...'); c, b = req('POST', f'https://rest.runpod.io/v1/pods/{A.pod}/start', RK, timeout=60)
         print('start: HTTP', c)
+        if c in (401, 403): sys.exit('RunPod trả %d: khoá RunPod chưa được áp dụng (credential cho rest.runpod.io hoặc RUNPOD_API_KEY). Thêm khoá rồi mở phiên mới.' % c)
         for i in range(60):
             time.sleep(5)
             if healthy(): print('Pod sẵn sàng sau ~%ds' % ((i + 1) * 5)); break
         else: sys.exit('Pod không sẵn sàng sau 5 phút (kiểm tra bảng điều khiển RunPod).')
-    else: sys.exit('/health lỗi. Bật pod (cần --pod và RUNPOD_API_KEY) hoặc kiểm tra mạng/địa chỉ.')
-if not KEY: sys.exit('Thiếu VOICESTUDIO_API_KEY trong biến môi trường (thêm vào cài đặt môi trường; không dán khoá vào chat).')
+    else: sys.exit('/health lỗi. Thêm --pod <id> để script bật pod, hoặc kiểm tra mạng/địa chỉ.')
 
 c, b = req('GET', BASE + '/v1/audio/voices', KEY)
+if c in (401, 403): sys.exit('VoiceStudio trả %d: khoá VoiceStudio chưa được áp dụng (credential cho %s hoặc VOICESTUDIO_API_KEY). Thêm khoá rồi mở phiên mới.' % (c, BASE.split('//')[1]))
 if c != 200: sys.exit(f'Liệt kê giọng lỗi: HTTP {c} {b[:200].decode("utf-8", "replace")}')
 V = json.loads(b); V = V.get('voices') or V.get('data') or V if isinstance(V, dict) else V
 vid = A.voice_id
