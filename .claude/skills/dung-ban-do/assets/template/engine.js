@@ -13,6 +13,9 @@ const eOut = x => 1 - Math.pow(1 - x, 3);
 const eExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
 const eBack = x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
 const eIO = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+// màu theo loại khu vực (đúng mã màu video mẫu): vàng cam = KCN/khu kinh tế; đỏ = khu đô thị; tím = cảng; cam = sân bay; xanh lá = ranh đô thị/du lịch; xanh dương = ranh hành chính
+const ZCOL = { kcn: '#FFC21A', dothi: '#FF4D5E', cang: '#A78BFA', sanbay: '#FF9A3C', xanh: '#34D399', hanhchinh: '#4DD2FF' };
+let ZONES = [], KM = null, kmEl = {};
 const SFX = []; const sfx = (t, name, g = 0) => SFX.push({ t: +t.toFixed(3), name, g });
 window.SFX_LIST = SFX;
 // hiệu ứng toàn khung — scene.js ghi đè: flash [[t,dur,max]], glow [[t,dur]], sweep [[t]]
@@ -77,6 +80,7 @@ function initEngine(cfg) {
   <path id="rg2" d="${RD}" fill="none" stroke="#05F4E8" stroke-linecap="round" opacity=".38"/>
   <path id="rg1" d="${RD}" fill="none" stroke="#05F4E8" stroke-linecap="round"/>
   <path id="rg0" d="${RD}" fill="none" stroke="#fff" stroke-linecap="round" opacity=".9"/>
+  <g id="zones"></g>
   <g id="rings"></g>
   <g id="train"><rect x="-74" y="-20" width="148" height="40" rx="20" fill="rgba(5,244,232,.35)"/><rect x="-66" y="-14" width="132" height="28" rx="14" fill="#fff" stroke="#05F4E8" stroke-width="3"/><rect x="-54" y="-8" width="20" height="9" rx="3" fill="#06121C"/><rect x="-26" y="-8" width="20" height="9" rx="3" fill="#06121C"/><rect x="2" y="-8" width="20" height="9" rx="3" fill="#06121C"/><rect x="30" y="-8" width="20" height="9" rx="3" fill="#06121C"/><rect x="-64" y="4" width="128" height="7" rx="3" fill="#E3172F"/></g>
  </svg></div>
@@ -126,6 +130,43 @@ ${credit ? `<div style="position:absolute;right:40px;bottom:44px;color:rgba(255,
     R.els = [0, 1, 2].map(() => mk('circle', { cx: R.c[0], cy: R.c[1], fill: 'none', stroke: R.col }));
   }
   DIM = cfg.dim || [];
+  // --- vùng khu vực: {name,kind|color,pts:[[lat,lon],...],t0,t1,anchor:[lat,lon],dx,lead,smin,smax} ---
+  const zonesG = document.getElementById('zones'), places = document.getElementById('places');
+  const mkz = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); zonesG.appendChild(e); return e; };
+  ZONES = (cfg.zones || []).map(z => {
+    const pts = z.pts.map(p => geo(p[0], p[1])), col = z.color || ZCOL[z.kind] || '#FFE600', d = 'M' + pts.map(p => p.join(',')).join(' L') + ' Z';
+    const an = z.anchor ? geo(z.anchor[0], z.anchor[1]) : [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length];
+    const R = { z, col, an, fill: mkz('path', { d, fill: col, 'fill-opacity': 0, stroke: 'none' }), glow: mkz('path', { d, fill: 'none', stroke: col, 'stroke-linejoin': 'round', pathLength: 1 }), line: mkz('path', { d, fill: 'none', stroke: col, 'stroke-linejoin': 'round', pathLength: 1 }) };
+    const lead = z.lead === undefined ? 110 : z.lead, dx = z.dx || 0, w = document.createElement('div');
+    w.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0';
+    w.innerHTML = `<svg width="1" height="1" style="position:absolute;left:0;top:0;overflow:visible"><line x1="0" y1="0" x2="${dx}" y2="${-lead}" stroke="${col}" stroke-width="3"/><circle cx="0" cy="0" r="7" fill="${col}" stroke="#fff" stroke-width="2"/></svg>
+<div class="zcard" style="position:absolute;left:${dx}px;top:${-lead}px;transform:translate(-50%,-100%);background:#fff;border-radius:10px;border-left:9px solid ${col};padding:7px 20px 7px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);white-space:nowrap">
+<div style="font-family:SS;font-weight:700;font-size:15px;letter-spacing:2px;color:${col};line-height:1">${z.tag || 'KHU VỰC'}</div><div style="font-family:SS;font-weight:900;font-size:30px;color:#0B0F14;line-height:1.15">${z.name}</div></div>`;
+    places.appendChild(w); R.card = w; R.cardEl = w.querySelector('.zcard'); return R;
+  });
+  // --- thanh tiến độ km tỷ lệ thật (HUD đáy): {title,subtitle,total,stops:[km...],t0,t1,x0,x1,y} ---
+  KM = cfg.kmbar || null;
+  if (KM) {
+    const x0 = KM.x0 || 90, x1 = KM.x1 || 990, y = KM.y || 1590, tot = KM.total;
+    const k = document.createElement('div'); k.style.cssText = 'position:absolute;inset:0;opacity:0;pointer-events:none';
+    k.innerHTML = `<div style="position:absolute;left:0;right:0;bottom:0;height:640px;background:linear-gradient(180deg,rgba(3,10,18,0),rgba(3,10,18,.9) 55%)"></div>
+<div style="position:absolute;left:0;width:1080px;top:${y - 156}px;text-align:center;color:var(--cy);font-family:SS;font-weight:700;font-size:26px;letter-spacing:4px;text-shadow:0 2px 10px #000">${KM.subtitle || ''}</div>
+<div style="position:absolute;left:0;width:1080px;top:${y - 124}px;text-align:center;color:#fff;font-family:SS;font-weight:900;font-size:56px;text-transform:uppercase;text-shadow:0 3px 14px #000"><span style="display:inline-block;transform:scaleX(.86)">${KM.title || ''}</span></div>
+<div style="position:absolute;left:${x0}px;width:${x1 - x0}px;top:${y - 2}px;height:4px;background:rgba(255,255,255,.35);border-radius:2px"></div>
+<div id="kmfill" style="position:absolute;left:${x0}px;top:${y - 3}px;height:6px;width:0;background:var(--cy);border-radius:3px;box-shadow:0 0 16px var(--cy)"></div>
+${(KM.stops || []).map(v => `<div class="kmdot" data-km="${v}" style="position:absolute;left:${x0 + (x1 - x0) * v / tot - 8}px;top:${y - 8}px;width:16px;height:16px;border-radius:50%;box-sizing:border-box;background:#06121C;border:3px solid #fff"></div>`).join('')}
+<div id="kmhead" style="position:absolute;left:0;top:${y - 11}px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 0 18px var(--cy),0 0 4px #fff"></div>
+<div id="kmtxt" style="position:absolute;left:0;width:200px;top:${y + 22}px;text-align:center;color:#fff;font-family:SS;font-weight:700;font-size:28px;text-shadow:0 2px 10px #000"></div>`;
+    document.getElementById('mapwrap').appendChild(k); kmEl = { root: k, fill: k.querySelector('#kmfill'), head: k.querySelector('#kmhead'), txt: k.querySelector('#kmtxt'), dots: [...k.querySelectorAll('.kmdot')], x0, x1, tot };
+  }
+  // --- logo cố định (góc trên phải): {src,w,h,radius,bg,pad}; nhãn địa điểm/demo tự lùi sang trái ---
+  if (cfg.logo) {
+    const L = cfg.logo, w = L.w || 120, h = L.h || w, lg = document.createElement('div');
+    lg.id = 'logo'; lg.style.cssText = `position:absolute;right:54px;top:56px;width:${w}px;height:${h}px;border-radius:${L.radius === undefined ? 22 : L.radius}px;background:${L.bg || '#fff'};padding:${L.pad === undefined ? 10 : L.pad}px;box-sizing:border-box;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center`;
+    lg.innerHTML = `<img src="${L.src}" style="max-width:100%;max-height:100%;object-fit:contain">`; document.getElementById('stage').appendChild(lg);
+    const im = lg.querySelector('img'); READY_LIST.push(new Promise(r => { im.onload = r; im.onerror = r; }));
+    document.getElementById('loc').style.right = (54 + w + 24) + 'px'; document.getElementById('demo').style.right = (54 + w + 24) + 'px';
+  }
   KEYS = ((cfg.cam || {}).keys || []).map(([t, tg, s]) => { const p = target(tg); return [t, p[0], p[1], s]; });
   // --- nền ---
   bgEls = TL.bgs.map(([src, i, o, dir]) => {
@@ -190,6 +231,28 @@ function renderMap(t) {
       const ph = (((t - R.t0) * 0.55 + i / 3) % 1); c.setAttribute('r', R.static ? R.r * (0.15 + 0.85 * ph) : R.r * (0.25 + 0.95 * ph)); c.setAttribute('stroke-width', sw(5));
       c.style.opacity = (1 - ph) * vis;
     });
+  }
+  // vùng khu vực: viền vẽ dần + nền mờ + thẻ trắng có sọc màu và đường dẫn
+  for (const R of ZONES) {
+    const z = R.z, on = t >= z.t0 && t < z.t1 + 0.1, prog = eOut(lin(t, z.t0, z.t0 + 0.8)), out = 1 - lin(t, z.t1 - 0.4, z.t1), v = on ? out : 0;
+    R.line.style.display = R.glow.style.display = R.fill.style.display = on ? '' : 'none';
+    R.line.setAttribute('stroke-width', sw(4)); R.line.setAttribute('stroke-dasharray', `${prog} 1`); R.line.style.opacity = v;
+    R.glow.setAttribute('stroke-width', sw(11)); R.glow.setAttribute('stroke-dasharray', `${prog} 1`); R.glow.style.opacity = v * 0.35;
+    R.fill.setAttribute('fill-opacity', 0.13 * prog); R.fill.style.opacity = v;
+    const showCard = on && (z.smin === undefined || s >= z.smin) && (z.smax === undefined || s <= z.smax);
+    R.card.style.display = showCard ? '' : 'none';
+    if (showCard) { const k = t - z.t0 - 0.3, x = eBack(clamp(k / 0.35)); R.card.style.transform = `translate(${R.an[0] * s + ox}px,${R.an[1] * s + oy}px)`; R.cardEl.style.transform = `translate(-50%,-100%) scale(${0.8 + 0.2 * x})`; R.card.style.opacity = clamp(k / 0.15) * out; }
+  }
+  // thanh km: đầu thanh chạy theo tàu; chấm ga sáng cyan khi tàu đã qua
+  if (KM) {
+    const a = KM.t0 === undefined ? 0 : KM.t0, b = KM.t1 === undefined ? TL.total : KM.t1, vis = lin(t, a, a + 0.4) * (1 - lin(t, b - 0.4, b));
+    kmEl.root.style.opacity = vis;
+    if (vis > 0) {
+      const km = KM.total * (TRAIN ? trainP(t) : lin(t, a, b)), x = kmEl.x0 + (kmEl.x1 - kmEl.x0) * km / KM.total;
+      kmEl.fill.style.width = (x - kmEl.x0) + 'px'; kmEl.head.style.left = (x - 11) + 'px';
+      kmEl.txt.style.left = (clamp(x, kmEl.x0 + 30, kmEl.x1 - 30) - 100) + 'px'; kmEl.txt.textContent = fmtNum(km, ' km', false, 1);
+      for (const d of kmEl.dots) { const lit = +d.dataset.km <= km + 0.05; d.style.background = lit ? '#05F4E8' : '#06121C'; d.style.borderColor = lit ? '#05F4E8' : '#fff'; }
+    }
   }
   // ghim: xám trước khi tàu qua, cyan + xung khi tàu tới, nhãn theo cửa sổ thời gian
   const tEnd = TRAIN ? TRAIN.t1 : -1;
