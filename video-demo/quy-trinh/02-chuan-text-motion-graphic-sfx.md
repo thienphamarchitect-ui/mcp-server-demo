@@ -103,6 +103,9 @@ Toàn cảnh đẩy chậm +10% → bám tàu (trượt vào 1,4 s, giữ theo t
 | CTA | 820×170, bo 90, nền cyan, chữ navy 66 |
 | Miễn trừ | 25px, trắng 78%, cách đáy 100 |
 | Brand | thanh cyan 12×64 + tên 44 + dòng phụ 24 cyan |
+| Thẻ khu vực (`zones`) | thẻ trắng bo 10, sọc màu trái 9, dòng nhỏ "KHU VỰC" 15 (màu loại) + tên 30 đậm; đường dẫn 3 + chấm 7; viền polygon 4 (quầng 11), nền 13%; màu theo loại: vàng cam KCN, đỏ khu đô thị, tím cảng, cam sân bay, xanh lá ranh đô thị/du lịch, xanh dương ranh hành chính |
+| Thanh km (`kmbar`) | dòng nhỏ cyan 26 (giãn 4) + tiêu đề trắng 56; thanh 900px, chấm ga 16 đặt đúng tỷ lệ km, đầu thanh 22 + số km 28; chiếm y 1434–1630 |
+| Logo | thẻ trắng bo 22, đệm 10, 120×120, góc trên phải (cách mép 54) |
 
 ### Clip (người dẫn / cảnh trám)
 `clip()` ghép chuỗi ảnh tách từ video quay: toàn khung (`cover`) hoặc khung nhỏ bo góc (viền cyan, đổ bóng). Thêm lớp tối phía sau chữ. Vào/ra mờ 0,2 s. Tách khung: `ffmpeg -i in.mp4 -vf "fps=30,scale=1080:-2" clips/a/%05d.jpg`; tiếng của clip thêm vào `timeline.vo`.

@@ -62,9 +62,9 @@ Xem từng sheet (Read ảnh), ghi lại: mốc thời gian từng giai đoạn,
 | Trong video mẫu | Engine `dung-ban-do` | Cách xử lý |
 |---|---|---|
 | Camera nghiêng ~60°, orbit | **Chưa có**: nhìn thẳng từ trên xuống, chỉ pan/zoom | chấp nhận nhìn từ trên xuống; hoặc thêm CSS `perspective/rotateX` cho lớp bản đồ (cần phát triển) |
-| Polygon khu vực tô viền theo màu (đã xác nhận: vàng cam = KCN/khu kinh tế; **đỏ = Khu đô thị Chu Lai**; tím = cảng; cam = sân bay; **xanh lá = ranh Hội An + KĐT Vịnh An Hòa**; cyan = ranh Tam Kỳ) | **Chưa có** | vẽ tạm bằng `rings` (khoanh bán kính) hoặc `raw()`; thêm vào engine nếu cần |
-| Thẻ "KHU VỰC" trắng + sọc màu | Chưa có kiểu riêng | dùng `paper()`/`raw()` |
-| Thanh tiến độ km có chấm ga tỷ lệ thật | **Chưa có** | thêm vào engine, hoặc `raw()` + tự tính |
-| Logo cố định góc trên phải | Chưa có khoá riêng | `raw()` (ảnh `<img>`) hoặc `brand` |
+| Polygon khu vực tô viền theo màu (đã xác nhận: vàng cam = KCN/khu kinh tế; **đỏ = Khu đô thị Chu Lai**; tím = cảng; cam = sân bay; **xanh lá = ranh Hội An + KĐT Vịnh An Hòa**; cyan = ranh Tam Kỳ) | **Có** (`zones`, `kind` theo đúng mã màu này) | cần ranh giới thật (quy hoạch/OSM) |
+| Thẻ "KHU VỰC" trắng + sọc màu | **Có** (thẻ của `zones`) | — |
+| Thanh tiến độ km có chấm ga tỷ lệ thật | **Có** (`kmbar`) | cần km cộng dồn từng ga |
+| Logo cố định góc trên phải | **Có** (`logo`) | cần file logo của người dùng |
 | Tàu 4 toa, vệt neon, nhãn, ghim, vòng xung | **Có** (`train`, `pins`, `rings`) | dùng trực tiếp |
 | Ghim ga phụ không nhãn | Có (`dot:true`) | — |

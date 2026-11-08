@@ -14,7 +14,7 @@ Người dùng hay đi từng bước và duyệt giữa chừng, nên **giao s�
 ## Quy trình
 
 **1. Hiểu mục tiêu.** Hỏi/tìm: tuyến hoặc khu vực nào, có video mẫu không, giọng ai (xem mục Giọng), số liệu nào lên màn hình, nền tảng đăng. Khi không có ai để hỏi (chạy tự động) hoặc người dùng chỉ đưa tên tuyến + độ dài + thời lượng, giả định: không giọng đọc, không nhãn "BẢN DEMO", có dòng "Tuyến minh hoạ…" và ghi nguồn ảnh, rồi nói rõ các giả định đó ở cuối.
-Có video mẫu → đọc **cả** `references/phan-tich-video-mau.md` (mục 1–4 mô tả video mẫu của skill, mục 5 là cách phân tích, mục 6 là bảng khoảng cách với engine). Nếu video người dùng đưa chính là video đó (cùng độ dài/khổ/logo) thì mục 1–4 chỉ là giả thuyết: xác nhận bằng vài số đo thật rồi bổ sung điều mới. Trong bản trả lời nói thẳng: camera 3D nghiêng, polygon khu vực, thanh km, logo — engine hiện **chưa có**; đề xuất cách bù.
+Có video mẫu → đọc **cả** `references/phan-tich-video-mau.md` (mục 1–4 mô tả video mẫu của skill, mục 5 là cách phân tích, mục 6 là bảng khoảng cách với engine). Nếu video người dùng đưa chính là video đó (cùng độ dài/khổ/logo) thì mục 1–4 chỉ là giả thuyết: xác nhận bằng vài số đo thật rồi bổ sung điều mới. Trong bản trả lời nói thẳng: **camera 3D nghiêng** engine hiện chưa có (chỉ nhìn thẳng từ trên xuống); polygon khu vực (`zones`), thanh km tỷ lệ thật (`kmbar`), logo (`logo`) đã có — xem `assets/example-hud/`; đề xuất cách bù cho phần chưa có.
 
 **2. Số liệu và kịch bản.** Đối chiếu từng con số với bài gốc (WebFetch/`scripts/capture_news.js`), ghi nguồn + ngày. Viết kịch bản theo mạch: *trả lời trước → tuyến/khu vực → cái đang chạy thật (số liệu) → các tiêu chí → mốc theo dõi + kêu gọi*. Mỗi ý một con số; dữ liệu phụ để thành chữ trên màn hình, không bắt người đọc đọc nhiều số. Lời đọc ~2,7 từ/giây.
 
@@ -50,6 +50,7 @@ python3 scripts/fetch_map.py <project> --bbox ... --pins "..." --sea <right|bott
 ## Tài nguyên
 - `assets/template/` — `render.html`, `engine.js` (dùng chung), `scene.js` (khung trống), `timeline.js`, `fonts/`
 - `assets/example-metro/` — `scene.js` + `timeline.js` + `news.json` của video Metro Đà Nẵng – Chu Lai (8 cảnh, 83,8s, có giọng đọc)
+- `assets/example-hud/` — cộng thêm vào scene Metro: polygon khu vực, thanh km tỷ lệ thật, logo (HUD kiểu video mẫu gốc)
 - `assets/example-ring/` — cảnh không tuyến/không giọng: vòng bán kính cố định, ghim lệch nhãn, ghim nhỏ, số thập phân
 - `scripts/` — `plan_map.py` (bbox + ov), `fetch_map.py` + `seafix.py --sea` (ảnh nền), `grid_overlay.py` (dò toạ độ bằng lưới), `capture_news.js`, `tts_decode.py`, `make_captions.py` (phụ đề từ lời đọc), `vo_prep.sh`, `voicestudio_tts.py`, `render.js`, `audio.py`, `make_video.sh`
 - `references/` — `phan-tich-video-mau.md` (cách làm video mẫu + cách phân tích video mới), `engine.md` (API đầy đủ), `bai-hoc.md` (lỗi đã gặp)

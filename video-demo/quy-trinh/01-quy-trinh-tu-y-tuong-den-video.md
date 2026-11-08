@@ -15,7 +15,7 @@ Bản NHÁP để duyệt. Định nghĩa dạng video (MAP EXPLAINER), phiếu 
 | Căn mốc chữ theo giọng | ⚠ thủ công | lấy từ khoảng lặng; mất ~10–15 phút mỗi video |
 | Vẽ tuyến theo đường thật | ⚠ tốn thời gian (~40% công) | có `grid_overlay.py` hỗ trợ dò toạ độ |
 | Giọng người thật (Linh) | ⏳ chờ | credential RunPod/VoiceStudio chưa áp dụng ở phiên này |
-| Polygon khu vực, thanh km tỷ lệ thật, logo ảnh | ❌ chưa có | video mẫu gốc có; engine chỉ có thể bù bằng `rings`/`raw()` |
+| Polygon khu vực, thanh km tỷ lệ thật, logo | ✅ **bổ sung** | `zones`, `kmbar`, `logo` (đã thử bằng khung hình thật) |
 | Camera nghiêng 3D | ❌ chưa có | engine nhìn thẳng từ trên xuống |
 | Nhạc/SFX chất lượng thư viện, stereo, EQ giọng | ❌ chưa có | SFX và nhạc đang tổng hợp |
 | Cảnh người dẫn, cảnh trám thật | ❌ chưa có tư liệu | thư mục Drive chưa mở được; `clip()` sẵn sàng |
@@ -105,4 +105,4 @@ Cập nhật bài học vào `bai-hoc.md` sau mỗi video.
 1. Credential RunPod/VoiceStudio chưa áp dụng → mở phiên mới để tạo giọng Linh, dựng v2.
 2. Tư liệu quay người dẫn + cảnh trám (thư mục Drive).
 3. Kênh liên hệ của Linh cho khung cuối.
-4. Có làm tiếp polygon khu vực + thanh km + logo cho engine không (cần nếu muốn đúng phong cách video mẫu).
+4. Camera nghiêng 3D (cuối cùng còn thiếu so với video mẫu gốc) — có làm không?
