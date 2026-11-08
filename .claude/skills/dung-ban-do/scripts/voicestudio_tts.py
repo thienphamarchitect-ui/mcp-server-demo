@@ -4,6 +4,7 @@
   python3 voicestudio_tts.py --base https://<podid>-3900.proxy.runpod.net --lines loi-doc.txt --out <project>/vo \
         --voice-name "Giọng Linh" [--pod <podId>] [--start N] [--only 3,5]
   python3 voicestudio_tts.py --base ... --list          # chỉ liệt kê giọng (id + tên)
+  # VoiceStudio chạy NGAY TRÊN MÁY (local, chế độ API): --base http://localhost:<cổng>  (không bật pod, không cần khoá nếu app không đòi)
 
 Khoá KHÔNG nhận qua tham số và không bao giờ in ra. Hai cách cấp khoá:
   (a) credential theo tên miền trong cài đặt môi trường (proxy tự thay header Authorization): script gửi header giả 'Bearer proxy-injects';
@@ -23,7 +24,8 @@ ap.add_argument('--model', default='tts-1'); ap.add_argument('--format', default
 ap.add_argument('--start', type=int, default=1, help='số thứ tự của dòng đầu (mặc định 1)'); ap.add_argument('--only', default='', help='chỉ tạo các số này, vd. 3,5')
 ap.add_argument('--list', action='store_true'); ap.add_argument('--speed', type=float, default=0, help='nếu API hỗ trợ tham số speed (0 = bỏ qua)')
 A = ap.parse_args()
-BASE = A.base.rstrip('/'); KEY = os.environ.get('VOICESTUDIO_API_KEY') or 'proxy-injects'; RK = os.environ.get('RUNPOD_API_KEY') or 'proxy-injects'
+BASE = A.base.rstrip('/'); LOCAL = BASE.startswith(('http://localhost', 'http://127.0.0.1', 'http://[::1]'))
+KEY = os.environ.get('VOICESTUDIO_API_KEY') or ('' if LOCAL else 'proxy-injects'); RK = os.environ.get('RUNPOD_API_KEY') or 'proxy-injects'
 CA = os.environ.get('SSL_CERT_FILE') or ('/root/.ccr/ca-bundle.crt' if os.path.exists('/root/.ccr/ca-bundle.crt') else None)
 CTX = ssl.create_default_context(cafile=CA) if CA else ssl.create_default_context()
 
@@ -42,6 +44,7 @@ def healthy():
     c, b = req('GET', BASE + '/health', timeout=20); return c == 200
 
 if not healthy():
+    if LOCAL: sys.exit('VoiceStudio local không trả lời tại %s/health. Mở app VoiceStudio, bật máy chủ API (cổng trong cài đặt) rồi chạy lại.' % BASE)
     if A.pod:
         print('Pod chưa sẵn sàng -> gọi start...'); c, b = req('POST', f'https://rest.runpod.io/v1/pods/{A.pod}/start', RK, timeout=60)
         print('start: HTTP', c)

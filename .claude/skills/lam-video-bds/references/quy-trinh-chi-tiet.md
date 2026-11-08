@@ -47,6 +47,7 @@ Tên + chức danh, số năm và lĩnh vực kinh nghiệm (chỉ điều có t
 - **Giọng**: xem bước 7.
 
 ### 7. Giọng đọc (10–20 phút)
+**Thứ tự ưu tiên khi cần giọng của người dẫn (đã được đồng ý):** (1) VoiceStudio trên pod RunPod (`voicestudio_tts.py --base https://<pod>-3900.proxy.runpod.net --pod <id>`, pod tự tắt sau 5 phút rảnh, khoá RunPod/VoiceStudio cấu hình theo tên miền); (2) **VoiceStudio chạy trên máy người dùng** (`--base http://localhost:<cổng>`; cần chạy skill ngay trên máy đó, hoặc người dùng tự xuất WAV theo `loi-doc.txt` rồi tải lên); (3) giọng AI mẫu (Speko) gắn nhãn "BẢN DEMO"; (4) người dẫn tự thu giọng. Phiên cloud chỉ nối được máy người dùng khi app Claude trên máy đó cung cấp thư mục cho phiên cloud (Remote Control); nếu không thì dùng cách (2) bằng tay.
 Tách thành 12–15 câu, mỗi câu một file; số viết bằng chữ; từ khó đọc đổi trong lời (giữ nguyên trên màn hình). Hai nguồn:
 - **Giọng AI mẫu** (Speko): nhanh, dùng cho demo, gắn nhãn "BẢN DEMO · GIỌNG ĐỌC AI MẪU".
 - **Giọng của người dẫn** (VoiceStudio, đã được người đó đồng ý): `scripts/voicestudio_tts.py`; nhãn "GIỌNG AI · ĐÃ ĐƯỢC … ĐỒNG Ý"; bật nhãn nội dung AI của nền tảng khi đăng.
