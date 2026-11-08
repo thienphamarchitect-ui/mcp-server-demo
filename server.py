@@ -1,15 +1,16 @@
 """
 MCP server mẫu cho Claude.
 
-Cung cấp 3 nhóm công cụ (tool) đại diện cho các use-case phổ biến:
+Cung cấp 4 nhóm công cụ (tool) đại diện cho các use-case phổ biến:
   1. Gọi API ngoài qua HTTP   -> http_get
   2. Truy vấn cơ sở dữ liệu   -> db_query / db_tables (SQLite demo)
   3. Thao tác file hệ thống   -> list_files / read_file / write_file
      (bị giới hạn trong thư mục WORKSPACE_DIR để an toàn)
+  4. Voice Studio (TTS)       -> voice_list / voice_tts / voice_dialogue
 
 Chạy qua stdio (mặc định) để dùng ngay với Claude Desktop hoặc Claude Code.
-Chỉ dùng thư viện chuẩn của Python (sqlite3, urllib) + SDK "mcp" đã cài sẵn,
-nên không cần pip install thêm gói nào.
+Nhóm 1-3 chỉ dùng thư viện chuẩn của Python (sqlite3, urllib) + SDK "mcp";
+nhóm 4 (Voice Studio) cần thêm gói "edge-tts" (có trong requirements.txt).
 """
 
 from __future__ import annotations
@@ -91,7 +92,9 @@ server = MCPServer(
     instructions=(
         "Server mẫu cung cấp 3 nhóm công cụ: gọi HTTP API ngoài (http_get), "
         "truy vấn cơ sở dữ liệu SQLite demo (db_query, db_tables), và thao tác "
-        "file trong thư mục 'files/' của project (list_files, read_file, write_file)."
+        "file trong thư mục 'files/' của project (list_files, read_file, write_file), "
+        "và Voice Studio chuyển văn bản thành giọng nói tiếng Việt/đa ngôn ngữ, lưu MP3 "
+        "trong 'files/' (voice_list, voice_tts, voice_dialogue)."
     ),
 )
 
@@ -227,6 +230,171 @@ def write_file(relative_path: str, content: str, overwrite: bool = False) -> str
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content, encoding="utf-8")
     return f"Đã ghi {len(content)} ký tự vào '{relative_path}'."
+
+
+# --------------------------------------------------------------------------
+# Nhóm 4: Voice Studio — chuyển văn bản thành giọng nói (TTS)
+#
+# Dùng thư viện edge-tts (giọng neural của Microsoft Edge, miễn phí, không cần
+# API key, có giọng tiếng Việt vi-VN-HoaiMyNeural (nữ) và vi-VN-NamMinhNeural
+# (nam)). File âm thanh MP3 (+ phụ đề .srt) được ghi vào thư mục files/ để
+# dùng tiếp với list_files/read_file hoặc lấy ra dựng video.
+# --------------------------------------------------------------------------
+
+DEFAULT_VOICE = os.environ.get("VOICE_DEFAULT", "vi-VN-HoaiMyNeural")
+
+
+def _edge_tts():
+    """Import edge-tts khi cần (server vẫn chạy được nếu chưa cài gói này)."""
+    try:
+        import edge_tts  # type: ignore
+        import edge_tts.communicate as communicate  # type: ignore
+    except ImportError as e:  # pragma: no cover
+        raise RuntimeError(
+            "Chưa cài Voice Studio. Chạy: pip install -r requirements.txt (cần gói edge-tts)."
+        ) from e
+
+    # edge-tts luôn dùng CA của certifi; khi chạy sau proxy công ty / proxy có
+    # CA riêng thì cho phép chỉ định CA bundle qua biến môi trường.
+    ca_file = (
+        os.environ.get("VOICE_CA_BUNDLE")
+        or os.environ.get("SSL_CERT_FILE")
+        or os.environ.get("REQUESTS_CA_BUNDLE")
+    )
+    if ca_file and Path(ca_file).is_file():
+        import ssl
+
+        communicate._SSL_CTX = ssl.create_default_context(cafile=ca_file)
+    return edge_tts
+
+
+def _check_audio_output(output: str, overwrite: bool) -> Path:
+    if not output.lower().endswith(".mp3"):
+        raise ValueError("output phải là file .mp3, ví dụ 'voice/intro.mp3'.")
+    target = _resolve_in_workspace(output)
+    if target.exists() and not overwrite:
+        raise FileExistsError(f"File '{output}' đã tồn tại. Truyền overwrite=True nếu muốn ghi đè.")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    return target
+
+
+async def _synthesize(text: str, voice: str, rate: str, pitch: str, volume: str):
+    """Trả về (audio_bytes, danh sách boundary để làm phụ đề)."""
+    if not text.strip():
+        raise ValueError("text không được để trống.")
+    edge_tts = _edge_tts()
+    comm = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, volume=volume)
+    audio = bytearray()
+    boundaries = []
+    async for chunk in comm.stream():
+        if chunk["type"] == "audio":
+            audio.extend(chunk["data"])
+        elif chunk["type"] in ("WordBoundary", "SentenceBoundary"):
+            boundaries.append(chunk)
+    if not audio:
+        raise RuntimeError("Không nhận được dữ liệu âm thanh — kiểm tra lại tên giọng (voice) hoặc kết nối mạng.")
+    return bytes(audio), boundaries
+
+
+@server.tool()
+async def voice_list(language: str = "vi") -> str:
+    """Liệt kê các giọng đọc có sẵn trong Voice Studio.
+
+    Args:
+        language: Lọc theo mã ngôn ngữ/locale, ví dụ "vi" (tiếng Việt), "en-US",
+            hoặc "" để lấy tất cả.
+    """
+    edge_tts = _edge_tts()
+    voices = await edge_tts.list_voices()
+    prefix = language.lower()
+    result = [
+        {"voice": v["ShortName"], "locale": v["Locale"], "gender": v["Gender"]}
+        for v in voices
+        if not prefix or v["Locale"].lower().startswith(prefix)
+    ]
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@server.tool()
+async def voice_tts(
+    text: str,
+    output: str = "voice/output.mp3",
+    voice: str = DEFAULT_VOICE,
+    rate: str = "+0%",
+    pitch: str = "+0Hz",
+    volume: str = "+0%",
+    subtitles: bool = True,
+    overwrite: bool = False,
+) -> str:
+    """Chuyển văn bản thành giọng nói và lưu file MP3 trong thư mục files/.
+
+    Args:
+        text: Văn bản cần đọc (tiếng Việt hoặc ngôn ngữ của giọng đã chọn).
+        output: Đường dẫn file .mp3 tương đối trong files/, ví dụ "voice/intro.mp3".
+        voice: Tên giọng, ví dụ "vi-VN-HoaiMyNeural" (nữ) hoặc "vi-VN-NamMinhNeural" (nam).
+            Xem voice_list để biết thêm.
+        rate: Tốc độ đọc, ví dụ "+15%" (nhanh hơn) hoặc "-10%" (chậm hơn).
+        pitch: Cao độ, ví dụ "+5Hz" hoặc "-5Hz".
+        volume: Âm lượng, ví dụ "+20%".
+        subtitles: Có xuất kèm file phụ đề .srt cùng tên hay không.
+        overwrite: Cho phép ghi đè nếu file đã tồn tại.
+    """
+    target = _check_audio_output(output, overwrite)
+    audio, boundaries = await _synthesize(text, voice, rate, pitch, volume)
+    target.write_bytes(audio)
+
+    msg = f"Đã tạo '{target.relative_to(WORKSPACE_DIR)}' ({len(audio):,} bytes, giọng {voice})."
+    if subtitles and boundaries:
+        edge_tts = _edge_tts()
+        sub = edge_tts.SubMaker()
+        for b in boundaries:
+            sub.feed(b)
+        srt_path = target.with_suffix(".srt")
+        srt_path.write_text(sub.get_srt(), encoding="utf-8")
+        msg += f" Phụ đề: '{srt_path.relative_to(WORKSPACE_DIR)}'."
+    return msg
+
+
+@server.tool()
+async def voice_dialogue(
+    lines: list[dict[str, str]],
+    output: str = "voice/dialogue.mp3",
+    rate: str = "+0%",
+    overwrite: bool = False,
+) -> str:
+    """Tạo một file MP3 nhiều giọng (hội thoại, podcast, quảng cáo nhiều vai).
+
+    Mỗi phần tử trong lines là {"voice": "<tên giọng>", "text": "<câu thoại>"};
+    nếu bỏ "voice" sẽ dùng giọng mặc định. Các đoạn được ghép liền theo thứ tự.
+
+    Args:
+        lines: Danh sách câu thoại, ví dụ
+            [{"voice": "vi-VN-NamMinhNeural", "text": "Chào chị!"},
+             {"voice": "vi-VN-HoaiMyNeural", "text": "Chào anh, hôm nay thế nào?"}]
+        output: Đường dẫn file .mp3 tương đối trong files/.
+        rate: Tốc độ đọc chung, ví dụ "+10%".
+        overwrite: Cho phép ghi đè nếu file đã tồn tại.
+    """
+    if not lines:
+        raise ValueError("lines không được rỗng.")
+    target = _check_audio_output(output, overwrite)
+
+    # edge-tts luôn trả cùng một định dạng MP3 (24 kHz, mono, 48 kbps) nên có
+    # thể ghép trực tiếp các frame MP3 mà không cần ffmpeg.
+    combined = bytearray()
+    for i, line in enumerate(lines, 1):
+        text = (line.get("text") or "").strip()
+        if not text:
+            raise ValueError(f"Dòng {i} thiếu 'text'.")
+        voice = line.get("voice") or DEFAULT_VOICE
+        audio, _ = await _synthesize(text, voice, rate, "+0Hz", "+0%")
+        combined.extend(audio)
+
+    target.write_bytes(combined)
+    return (
+        f"Đã tạo '{target.relative_to(WORKSPACE_DIR)}' gồm {len(lines)} đoạn "
+        f"({len(combined):,} bytes)."
+    )
 
 
 # --------------------------------------------------------------------------

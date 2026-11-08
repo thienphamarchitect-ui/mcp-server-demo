@@ -1,7 +1,7 @@
 # demo-mcp-server
 
 Một MCP (Model Context Protocol) server mẫu viết bằng Python, cung cấp cho
-Claude 6 công cụ chia làm 3 nhóm:
+Claude 9 công cụ chia làm 4 nhóm:
 
 | Nhóm | Tool | Mô tả |
 |---|---|---|
@@ -11,9 +11,13 @@ Claude 6 công cụ chia làm 3 nhóm:
 | Thao tác file | `list_files` | Liệt kê file/thư mục trong `files/` |
 | | `read_file` | Đọc nội dung file trong `files/` |
 | | `write_file` | Ghi file trong `files/` |
+| Voice Studio (TTS) | `voice_list` | Liệt kê giọng đọc (lọc theo ngôn ngữ, mặc định `vi`) |
+| | `voice_tts` | Đọc văn bản thành file MP3 (+ phụ đề `.srt`) trong `files/` |
+| | `voice_dialogue` | Ghép nhiều câu thoại, nhiều giọng thành 1 file MP3 |
 
-Chỉ dùng thư viện chuẩn của Python (`sqlite3`, `urllib`) + SDK `mcp`, không
-cần cài thêm gói ngoài để chạy demo.
+Nhóm 1–3 chỉ dùng thư viện chuẩn của Python (`sqlite3`, `urllib`) + SDK `mcp`.
+Voice Studio dùng thêm gói [`edge-tts`](https://pypi.org/project/edge-tts/)
+(đã có trong `requirements.txt`).
 
 ## Cài đặt
 
@@ -76,6 +80,42 @@ hoặc thêm trực tiếp vào `.mcp.json` của project:
   }
 }
 ```
+
+## Voice Studio (chuyển văn bản thành giọng nói)
+
+Voice Studio dùng giọng neural của Microsoft Edge qua thư viện `edge-tts`:
+miễn phí, **không cần API key**, chất lượng tốt cho tiếng Việt.
+
+Cài đặt: đã nằm trong `pip install -r requirements.txt` ở trên (hoặc riêng lẻ
+`pip install edge-tts`). Server cần truy cập Internet tới
+`speech.platform.bing.com` khi tạo giọng.
+
+| Giọng tiếng Việt | Giới tính |
+|---|---|
+| `vi-VN-HoaiMyNeural` (mặc định) | Nữ |
+| `vi-VN-NamMinhNeural` | Nam |
+
+Gọi `voice_list` với `language=""` để xem toàn bộ giọng đa ngôn ngữ (vài trăm giọng).
+
+Ví dụ yêu cầu với Claude:
+
+- *"Đọc đoạn này bằng giọng nam, nhanh hơn 10%, lưu vào voice/intro.mp3"* →
+  `voice_tts(text=..., voice="vi-VN-NamMinhNeural", rate="+10%", output="voice/intro.mp3")`
+  — tạo `files/voice/intro.mp3` và `files/voice/intro.srt` (phụ đề có mốc thời gian,
+  dùng thẳng cho CapCut/Premiere).
+- *"Làm đoạn hội thoại 2 người giới thiệu dự án"* →
+  `voice_dialogue(lines=[{"voice": "vi-VN-NamMinhNeural", "text": "..."}, {"voice": "vi-VN-HoaiMyNeural", "text": "..."}])`.
+
+Tham số chỉnh giọng: `rate` (`"+15%"`, `"-10%"`), `pitch` (`"+5Hz"`),
+`volume` (`"+20%"`). File chỉ được ghi trong `files/` và mặc định không ghi đè
+(truyền `overwrite=True`).
+
+Biến môi trường tùy chọn:
+
+| Biến | Ý nghĩa |
+|---|---|
+| `VOICE_DEFAULT` | Giọng mặc định (mặc định `vi-VN-HoaiMyNeural`) |
+| `VOICE_CA_BUNDLE` | File CA bundle khi chạy sau proxy có chứng chỉ riêng (báo lỗi `CERTIFICATE_VERIFY_FAILED`). Cũng đọc `SSL_CERT_FILE` / `REQUESTS_CA_BUNDLE` nếu có. |
 
 ## Mở rộng thêm tool
 
