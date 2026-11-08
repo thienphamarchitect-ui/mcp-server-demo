@@ -14,6 +14,8 @@ python3 scripts/fetch_map.py $P --bbox 15.25 16.25 108.10 108.78 --sea right \
 và các mốc `tin/tout` trong scene.js (lấy từ khoảng lặng của `vo_prep.sh`).
 
 ## Đổi sang giọng VoiceStudio (RunPod)
+Xác nhận: người dùng cho biết **Linh đã đồng ý** dùng giọng AI nhân bản của mình cho video này (ngày 8/11/2026, xác nhận trong cuộc trò chuyện). Khi đăng vẫn bật nhãn nội dung AI của nền tảng; nhãn góc phải video đổi thành "GIỌNG AI · ĐÃ ĐƯỢC LINH ĐỒNG Ý".
+
 ```bash
 # Cần biến môi trường VOICESTUDIO_API_KEY (và RUNPOD_API_KEY nếu pod đang tắt). Pod tự tắt sau 5 phút rảnh.
 python3 scripts/voicestudio_tts.py --base https://xb1rpph9a63wa4-3900.proxy.runpod.net --pod xb1rpph9a63wa4 \
