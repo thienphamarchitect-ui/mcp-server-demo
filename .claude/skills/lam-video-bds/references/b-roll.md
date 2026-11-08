@@ -1,14 +1,16 @@
 # B-roll (cảnh trám) trong MAP EXPLAINER
 
 ## B-roll là gì, dùng để làm gì
-B-roll (cảnh trám) là các đoạn quay ngắn phủ lên lời đọc để **minh hoạ điều đang nói** và **đổi hình**, người xem không phải nhìn mãi một nền bản đồ. Trong dạng video này bản đồ + số liệu vẫn là xương sống; B-roll chiếm khoảng **30–40%** thời lượng, không hơn, và luôn phục vụ câu đang đọc.
+B-roll (cảnh trám) là các đoạn quay ngắn phủ lên lời đọc để **minh hoạ điều đang nói** và **đổi hình**, người xem không phải nhìn mãi một nền bản đồ. Trong dạng video này bản đồ + số liệu vẫn là xương sống; B-roll chiếm **15–30%** thời lượng khi người dẫn chưa quay mặt (mặc định, chế độ tự động), **30–40%** khi có người dẫn quay ở hook/CTA; không hơn, và luôn phục vụ câu đang đọc. Mỗi khối thường chỉ cần 1–3 clip; khối bằng chứng (thẻ báo, thẻ số) và khối mốc không dùng B-roll.
 
 ## Có 3 loại tư liệu, mỗi loại một cách dùng
 | Loại | Ví dụ | Cách dùng | Tiếng |
 |---|---|---|---|
-| **Người dẫn** (talking head) | Linh nói trước camera ở đoạn mở và kết | toàn khung hoặc khung nhỏ bo góc | **dùng tiếng thật của người đó** |
+| **Người dẫn** (talking head) | người dẫn nói trước camera ở đoạn mở và kết | toàn khung hoặc khung nhỏ bo góc | **dùng tiếng thật của người đó** |
 | **B-roll địa điểm / hoạt động** | sông Hàn, cầu Rồng, bãi biển, sân bay, khách du lịch, căn hộ, nội thất, dọn phòng, check-in | PiP cạnh bản đồ, hoặc toàn khung thay nền DARK | **tắt tiếng**, giọng đọc phủ lên |
 | **Tư liệu/tài liệu** | slide chính sách, bản vẽ, ảnh báo | dùng thẻ `paper()` (không phải clip) | không có |
+
+**Khi người dẫn không quay mặt (mặc định chạy tự động):** vẫn giới thiệu bằng **tên + chức danh trên chữ** (cap 150 / 44) ở hook, giọng voice-over; không thay bằng ảnh chân dung tự tìm. Có ảnh chân dung do chính người dẫn cung cấp thì đặt ở góc chữ nhỏ trên thẻ tên, không phủ toàn khung. Các cảnh "người dẫn nói trước camera" trong kế hoạch mẫu chỉ áp dụng khi có tư liệu quay thật.
 
 **Quy tắc vàng về tiếng:** giọng AI nhân bản không khớp khẩu hình. Khi người dẫn **xuất hiện trên hình và nói**, phải dùng giọng thật của họ (đưa tiếng vào `timeline.vo`). Giọng AI chỉ dùng cho các đoạn **voice-over** phủ B-roll hoặc bản đồ.
 
@@ -56,9 +58,9 @@ Nhớ thêm khoảng thời gian cảnh trong `timeline.bgs`: cảnh dùng clip 
 - `clip()` ghép **hình**; chưa phối hợp tiếng quay + tiếng AI cùng lúc ngoài cách `timeline.vo` ở trên.
 
 ## Bản quyền và quyền riêng tư
-Chỉ dùng tư liệu mình quay hoặc được cấp phép; người xuất hiện rõ mặt cần đồng ý; không logo/biển hiệu bên thứ ba rõ nét; bỏ nhạc trong clip (đã `-an`); flycam theo quy định địa phương; công trình/dự án của chủ đầu tư cần phép dùng hình ảnh. Mỗi video giữ file `nguon-b-roll.md`: tên file, nguồn, người quay, cho phép dùng đến ngày nào.
+Chỉ dùng tư liệu mình quay hoặc được cấp phép; người xuất hiện rõ mặt cần đồng ý; không logo/biển hiệu bên thứ ba rõ nét; bỏ nhạc trong clip (đã `-an`); flycam theo quy định địa phương; công trình/dự án của chủ đầu tư cần phép dùng hình ảnh. **Công trình quốc gia/hạ tầng đang vận hành (sân bay, ga, cảng):** chỉ dùng clip tự quay từ nơi công cộng hoặc tư liệu có văn bản cho phép (ví dụ từ đơn vị vận hành hay hãng thông tấn có bản quyền); clip lấy từ báo/YouTube không phải nguồn có phép. Ảnh vệ tinh Esri, ảnh báo, **và** B-roll công trình đều chỉ là demo cho tới khi có giấy phép (xem `tuan-thu-noi-dung.md`). Mẫu bảng nguồn: `assets/nguon-b-roll.md`. Mỗi video giữ file `nguon-b-roll.md`: tên file, nguồn, người quay, cho phép dùng đến ngày nào.
 
-## Ví dụ: kế hoạch B-roll cho video Metro Đà Nẵng – Khánh Linh (90 s)
+## Ví dụ: kế hoạch B-roll cho video Metro Đà Nẵng – Khánh Linh (90 s, **có người dẫn quay**; tên "Linh" chỉ là ví dụ)
 | Giây | Nội dung đang nói | B-roll đề xuất | Kiểu |
 |---|---|---|---|
 | 0–14 | hook "metro 266 nghìn tỷ… kỳ vọng hay nên chờ?" | Linh nói trước camera 4–5 s + 2 cảnh Đà Nẵng (cầu Rồng, sông Hàn) mỗi cảnh 2 s | toàn khung |

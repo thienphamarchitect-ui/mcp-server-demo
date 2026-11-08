@@ -17,11 +17,11 @@
 ## B. Quy trình 9 bước
 
 ### 1. Ý tưởng (10 phút) — ✅ duyệt
-- **Chọn chủ đề nóng**: tìm tin mới trong 7 ngày (hạ tầng, quy hoạch, thị trường). Ví dụ: metro 266.000 tỷ.
-- **Góc nhìn riêng của nhân vật** (khác biệt so với báo): Linh nhìn theo *dòng tiền*.
+- **Chọn chủ đề nóng**: tìm tin mới trong 7 ngày (hạ tầng, quy hoạch, thị trường). Ví dụ: metro 266.000 tỷ. **Kiểm trạng thái hiện tại của đối tượng** (đề xuất/khởi công/đã chạy) vì nó đổi cả hook. Không có tin mới thì xem mục "Khi không có tin nóng" trong `dang-video-map-explainer.md`.
+- **Góc nhìn riêng của người dẫn** (khác biệt so với báo): ví dụ Linh nhìn theo *dòng tiền*.
 - **Hook** dạng câu hỏi đối lập hoặc "trả lời trước": "…kỳ vọng hay nên chờ?"; "kỳ vọng thì có, nhưng đừng mua chỉ vì metro."
-- Chốt: độ dài (60–90 s), nền tảng, mục tiêu hành động (nhắn Linh), điều cấm (không hứa lợi nhuận).
-- Sản phẩm: 1 câu hook + 1 câu kết luận + danh sách ý chính.
+- Chốt: độ dài (60–90 s), nền tảng, biến thể A–E (`bien-the.md`), mục tiêu hành động (nhắn người dẫn), điều cấm (không hứa lợi nhuận).
+- Sản phẩm: **phiếu yêu cầu v1** = 1 câu hook + 1 câu kết luận (giả thuyết, chốt lại ở v2) + danh sách ý chính.
 
 ### 2. Phân tích video mẫu (10 phút) — nếu có mẫu
 `ffmpeg` trích 1 khung/giây, ghép contact sheet 6×2, cắt dải HUD đọc km theo giây, đo tốc độ. Ghi: giai đoạn, lớp hình, mã màu, tiết tấu. Nói rõ phần engine chưa có.
@@ -31,14 +31,15 @@
 - Phân loại: ✔ đã đối chiếu bài gốc / ✱ chỉ từ tóm tắt tìm kiếm (phải ghi "chưa kiểm").
 - Chính sách vay/ưu đãi: chỉ nêu đúng các con số trong tài liệu gốc (ví dụ slide hội thảo), kèm "điều kiện áp dụng theo chính sách từng thời điểm".
 
-### 4. Kịch bản (10–15 phút) — ✅ duyệt
+### 4. Kịch bản nháp (10–15 phút) — ✅ duyệt cấu trúc + số liệu
 - **Mạch**: trả lời trước → tuyến/khu vực → cái đang chạy thật (số liệu) → các tiêu chí → mốc theo dõi + CTA.
 - **Giữ chân người xem**: 3 giây đầu có chữ lớn + chuyển động; mở một "vòng lặp" ("3 tiêu chí") rồi trả đúng; số liệu mới mỗi 10–15 s; sự kiện hình mới mỗi 1,5–3 s.
-- **Bảng giây | hình | lời | chữ trên màn hình | SFX/nhạc**; lời đọc ~2,7 từ/giây (90 s ≈ 245 từ).
+- **Bảng 6 cột: Giây | Khối | Hình | Lời đọc (+số tiếng) | Chữ trên màn hình | SFX/nhạc**; lời đọc ~2,7 tiếng/giây (60 s ≈ 165, 90 s ≈ 245 tiếng; tiếng = âm tiết cách nhau bằng dấu cách). Thời gian từng khối cho 60/90 s: `dang-video-map-explainer.md`.
+- Phần của người dẫn (tên, tiêu chí, câu chuyện) để giữ chỗ `[NGƯỜI DẪN: …]`; kịch bản gắn nhãn "NHÁP – chờ người dẫn".
 - Kèm danh sách cần kiểm chứng và câu miễn trừ.
 
 ### 5. Cá nhân hoá người dẫn (hỏi từng câu) — ✅ duyệt
-Tên + chức danh, số năm và lĩnh vực kinh nghiệm (chỉ điều có thật), quan điểm/tiêu chí, mối quan hệ lợi ích (ví dụ với chủ đầu tư), kênh liên hệ, tư liệu quay. Đưa đoạn quan điểm thành "cho Linh xác nhận".
+Tên + chức danh, số năm và lĩnh vực kinh nghiệm (chỉ điều có thật), quan điểm/tiêu chí, mối quan hệ lợi ích (ví dụ với chủ đầu tư), kênh liên hệ, tư liệu quay. Đưa đoạn quan điểm thành "cho người dẫn xác nhận". Hỏi từng câu theo thứ tự ưu tiên (chặn dựng → đổi nội dung → có mặc định). Sau bước này điền **phiếu v2** và hoàn thiện **kịch bản cuối** (✅ duyệt), đếm lại số tiếng.
 
 ### 6. Tài nguyên (20–40 phút)
 - **Ảnh vệ tinh**: `plan_map.py` (vùng phủ cho mọi vị trí camera) → `fetch_map.py --sea …`; tuyến minh hoạ bằng `grid_overlay.py`; luôn ghi "tuyến minh hoạ".

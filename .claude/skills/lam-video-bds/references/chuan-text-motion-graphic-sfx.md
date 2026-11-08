@@ -19,7 +19,9 @@ Khung 1080×1920, 30 fps. Đơn vị px trừ khi ghi khác.
 | Chip | font 58 | "3 NĂM LƯU TRÚ" |
 | Phụ đề | font 50 | cụm ≤ 5 từ |
 | Nguồn `src` / ghi chú `note` / miễn trừ `disc` | 30 / 28 / 25 | — |
-| Brand | tên 44, dòng phụ 24; nhãn địa điểm 28; nhãn demo 22 | góc trên |
+| Brand | tên 44, dòng phụ 26; nhãn địa điểm 28; nhãn demo 26 (`BẢN DEMO · GIỌNG ĐỌC AI MẪU`) | góc trên |
+
+**Chính sách cỡ chữ:** chữ mang thông tin (hero, nhãn, chip, `note`, `src`) ≥ 28 px; chỉ **câu miễn trừ** (25 px) và nhãn phụ ở góc được nhỏ hơn 30. Nhãn AI/demo ≥ 26 px để đọc được trên điện thoại.
 
 ### Màu chữ
 Trắng `#FFFFFF` = nhãn, mô tả. Cyan `#05F4E8` = giá trị, điểm nhấn. Đỏ `#FF4D5E` = cảnh báo/giảm (không dùng cho số tăng). Vàng `#FFE600` = vòng bán kính, nhãn "20 KM", tô nhấn.
@@ -29,14 +31,27 @@ Trắng `#FFFFFF` = nhãn, mô tả. Cyan `#05F4E8` = giá trị, điểm nhấn
 - y 230–1560: nội dung chính (tiêu đề, số, thẻ báo, chip).
 - y 1560–1670: **phụ đề**.
 - y > 1670: dành cho giao diện nền tảng (nút, caption); chỉ để dòng nguồn/miễn trừ nhỏ.
+
+**Bản đồ vùng y (chọn y cho từng thành phần):**
+| y | Thành phần |
+|---|---|
+| 0–230 | brand, nhãn địa điểm, nhãn demo, thanh tiến trình |
+| 230–1400 | hero, nhãn, chip, thẻ số, thẻ báo |
+| 1400–1610 | nút CTA, chip mốc (cuối video; ở khối CTA không bật phụ đề) |
+| 1434–1630 | thanh km (khi bật `kmbar`: không để chữ lớn ở đây) |
+| 1560–1670 | phụ đề (chỉ bật khi không có thẻ nào ở y ≥ 1560) |
+| ~1700 | dòng `src` 30 px, gồm chữ "minh hoạ"/"đo đường chim bay, minh hoạ" |
+| ≥ 1760 | câu miễn trừ 25 px, cách đáy ~100 |
+
+CTA là thẻ của người dẫn nên đặt trong 1400–1610, **không** để dưới y 1670 (bị giao diện nền tảng che).
 - Lề ngang 70–90; dòng rộng > 950 tự co (`fit()`).
 
 ### Quy tắc nội dung
 1. **Một ý một con số.** Số phụ đưa thành chữ nhỏ trên màn hình, đừng bắt người đọc đọc.
 2. Hero ≤ ~24 ký tự; nhãn ≤ ~32 ký tự; chip ≤ ~22 ký tự; `note` ≤ ~60 ký tự (không tự co).
-3. Mỗi cảnh ≤ 3 khối chữ cùng lúc (không tính phụ đề).
+3. Mỗi cảnh ≤ 3 khối chữ **cùng lúc** (không tính phụ đề). Hook có thể có 4 dòng chữ nhưng phải **vào so le và ra dần** (0,25–0,6 s giữa các dòng; dòng trước ra/mờ khi dòng thứ tư vào) để tại mỗi thời điểm không quá 3 khối.
 4. Số kiểu Việt: 1.234,5 (`count` có `decimals`); **năm viết tĩnh** (count sẽ ra "2.027").
-5. Mọi số liệu có dòng nguồn + ngày; cuối video có câu miễn trừ.
+5. Mọi số liệu có dòng nguồn + ngày; cuối video có câu miễn trừ (mẫu: `tuan-thu-noi-dung.md`). Chữ "minh hoạ" dùng `src` 30 px, y ≈ 1700, hiện cùng lúc với tuyến/vòng và ở lại đến hết cảnh đó.
 6. Từ khoá giọng đọc nên có mặt bằng chữ trên màn hình (người xem tắt tiếng vẫn hiểu).
 
 ### Thời gian hiển thị
@@ -132,6 +147,7 @@ Một bộ màu cho cả loạt video; cùng vị trí brand/nhãn; mã màu nh�
 ### Quy tắc gắn
 Chữ trắng → `pop`; giá trị cyan → `ting`; số hero → `impact`; thẻ báo → `whoosh` + `shutter`; chip → `notify`; chuyển cảnh/zoom ra → `whoosh`; trước drop → `riser` (+ `heartbeat`); tên/CTA → `sparkle`; số tiền → `cash`. Mỗi SFX đặt đúng `tin` của phần tử.
 Giới hạn: ≤ 3 SFX mỗi giây; `impact` cách nhau ≥ 3–4 s; không đặt SFX lớn đè lên từ khoá của giọng.
+**Ngoại lệ riser:** `riser` bắt đầu 1,5–2 s trước `drop`, tức nằm dưới câu cuối của khối trước. Chấp nhận được vì riser là tiếng nền tăng dần (−4 dB, 0,8–9 kHz), không phải âm tức thời; đặt nó **sau** từ khoá của câu đó (từ khoá đã được đọc) và không để `impact`/`pop` nào trong cùng khoảng.
 
 ### Nhạc nền
 Tổng hợp Am–F–C–G, 100 BPM (nhịp 0,6 s). Cấu trúc: vào nhạc (`start`) → kick nhẹ (`beatsFrom`) → mỏng dần và im (`breakdown`) → **drop** full beat + impact + flash → chỉ còn pad (`outro`) → tắt dần 2 s. Đặt `drop` vào thẻ/câu chốt (khoảng 40% độ dài nếu không có khoảnh khắc nào nổi bật).
