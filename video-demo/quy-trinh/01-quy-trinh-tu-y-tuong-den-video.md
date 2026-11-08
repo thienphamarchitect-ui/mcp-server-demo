@@ -1,6 +1,6 @@
 # Quy trình làm video bất động sản có bản đồ: từ ý tưởng đến xuất bản
 
-Bản NHÁP để duyệt. Rút ra từ video "Metro Đà Nẵng – Chu Lai – Khánh Linh" (83,8 s, 9:16) và đã bổ sung phần còn thiếu sau khi rà soát. Chuẩn text/motion/graphic/SFX ở file `02-chuan-text-motion-graphic-sfx.md`.
+Bản NHÁP để duyệt. Định nghĩa dạng video (MAP EXPLAINER), phiếu yêu cầu 10 trường và hướng dẫn B-roll: file `03-b-roll-va-dinh-nghia-dang-video.md`. Rút ra từ video "Metro Đà Nẵng – Chu Lai – Khánh Linh" (83,8 s, 9:16) và đã bổ sung phần còn thiếu sau khi rà soát. Chuẩn text/motion/graphic/SFX ở file `02-chuan-text-motion-graphic-sfx.md`.
 
 ## A. Rà soát: đã tối ưu chưa?
 
@@ -51,7 +51,7 @@ Tên + chức danh, số năm và lĩnh vực kinh nghiệm (chỉ điều có t
 ### 6. Tài nguyên (20–40 phút)
 - **Ảnh vệ tinh**: `plan_map.py` (vùng phủ cho mọi vị trí camera) → `fetch_map.py --sea …`; tuyến minh hoạ bằng `grid_overlay.py`; luôn ghi "tuyến minh hoạ".
 - **Ảnh báo chứng**: `capture_news.js` + crop.
-- **Cảnh quay**: người dẫn/cảnh trám → tách khung (`ffmpeg … clips/a/%05d.jpg`) → `clip()`.
+- **Cảnh quay (B-roll)**: người dẫn/cảnh trám → tách khung (`ffmpeg … clips/a/%05d.jpg`) → `clip()`. Chi tiết, kế hoạch B-roll theo từng đoạn và giới hạn: file `03`.
 - **Giọng**: xem bước 7.
 
 ### 7. Giọng đọc (10–20 phút)
