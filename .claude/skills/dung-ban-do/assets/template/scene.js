@@ -24,6 +24,9 @@ initEngine(window.SCENE);
 // chip('◆', 'ĐIỂM NHẤN', 920, 3.0, 6.0);
 // src('Nguồn: ...', 1700, 1.0, 6.0);
 
+// Phụ đề từ lời đọc (xem references/engine.md): captions(window.CAPTIONS, {y: 1560});
+// Cảnh quay: clip('clips/a/%05d.jpg', soKhung, 30, tin, tout, {x:60, y:520, w:480, h:640, radius:30});
+
 FX.flash = [[0, 0.5, 1]];   // [t, thời lượng, độ sáng tối đa]
 FX.glow = [];               // [t, thời lượng]
 FX.sweep = [];              // [t] vệt sáng quét qua thẻ báo

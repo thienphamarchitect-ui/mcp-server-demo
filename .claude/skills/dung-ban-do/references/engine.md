@@ -51,6 +51,8 @@ Mẫu bay kiểu Google Earth: toàn cảnh → zoom vào vị trí (scale 1,9�
 | `chip(icon,text,y,tin,tout)` | viên thuốc gạch đầu dòng, trượt từ trái. Text ≤ ~22 ký tự. |
 | `src(text,y,tin,tout)` / `note(text,y,tin,tout)` | dòng nguồn 30px / ghi chú 28px (không tự thu nhỏ: ≤ ~60 ký tự). |
 | `raw(html,tin,tout,'fade'|'pop')` | tuỳ ý: nút `.cta`, câu miễn trừ `.disc`. |
+| `captions(list,{y:1560,size:50})` | phụ đề đốt cứng `[[t0,t1,'câu có *từ nhấn*'],...]`, vùng an toàn y 1560–1670, viền đen, nảy nhẹ 0,14 s. Tạo `captions.js` từ lời đọc: `python3 scripts/make_captions.py --lines loi-doc.txt --project <project>` (cần timeline.js + vo/f*.wav), nạp `<script src="captions.js">` trước `engine.js` trong render.html rồi `captions(window.CAPTIONS)`. Chỉ bật ở cảnh không có thẻ nào ở y ≥ 1560. |
+| `clip(mẫu,soKhung,fps,tin,tout,{x,y,w,h,radius,border,shadow,fit,loop,from,fade})` | ghép cảnh quay (người dẫn, cảnh trám) bằng **chuỗi ảnh** tách sẵn: `ffmpeg -i in.mp4 -vf "fps=30,scale=1080:-2" clips/a/%05d.jpg`, rồi `clip('clips/a/%05d.jpg',90,30,20,23,{x:60,y:520,w:480,h:640,radius:30,border:'4px solid #05F4E8',shadow:true})`. Vẽ lên canvas theo đúng khung `t` nên render xác định; `render.js` chờ ảnh nạp xong. Toàn khung: bỏ x,y,w,h (mặc định 1080×1920, `fit:'cover'`). Tiếng của clip: thêm vào `timeline.vo` (đã cắt từ video). Tạo clip lúc dựng **trước** các `line()` để chữ nằm trên clip. |
 `tin` = lúc giọng đọc chạm từ khoá (lấy từ khoảng lặng của vo_prep.sh), `tout` = đầu cảnh sau.
 `FX.flash=[[t,dur,max]]`, `FX.glow=[[t,dur]]`, `FX.sweep=[[t]]`; `sfx(t,name,gainDb)` thêm âm riêng.
 

@@ -14,6 +14,7 @@ const mode = process.argv[3] || 'preview';
   p.on('pageerror', e => { pageErrors++; console.error('PAGE ERROR', e.message); });
   await p.goto('file://' + path.join(DIR, 'render.html'));
   await p.evaluate(() => document.fonts.ready);
+  await p.evaluate(() => window.READY ? window.READY() : null);   // chuỗi ảnh của clip() phải nạp xong trước khi chụp
   await p.waitForTimeout(800);
   if (pageErrors || !(await p.evaluate(() => typeof window.render === 'function' && Array.isArray(window.SFX_LIST)))) {
     console.error('LỖI: trang không nạp được. Xem dòng PAGE ERROR phía trên; kiểm tra cú pháp bằng: node --check scene.js engine.js timeline.js');

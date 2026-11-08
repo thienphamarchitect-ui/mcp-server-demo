@@ -51,6 +51,6 @@ python3 scripts/fetch_map.py <project> --bbox ... --pins "..." --sea <right|bott
 - `assets/template/` — `render.html`, `engine.js` (dùng chung), `scene.js` (khung trống), `timeline.js`, `fonts/`
 - `assets/example-metro/` — `scene.js` + `timeline.js` + `news.json` của video Metro Đà Nẵng – Chu Lai (8 cảnh, 83,8s, có giọng đọc)
 - `assets/example-ring/` — cảnh không tuyến/không giọng: vòng bán kính cố định, ghim lệch nhãn, ghim nhỏ, số thập phân
-- `scripts/` — `plan_map.py` (bbox + ov), `fetch_map.py` + `seafix.py --sea` (ảnh nền), `grid_overlay.py` (dò toạ độ bằng lưới), `capture_news.js`, `tts_decode.py`, `vo_prep.sh`, `render.js`, `audio.py`, `make_video.sh`
+- `scripts/` — `plan_map.py` (bbox + ov), `fetch_map.py` + `seafix.py --sea` (ảnh nền), `grid_overlay.py` (dò toạ độ bằng lưới), `capture_news.js`, `tts_decode.py`, `make_captions.py` (phụ đề từ lời đọc), `vo_prep.sh`, `voicestudio_tts.py`, `render.js`, `audio.py`, `make_video.sh`
 - `references/` — `phan-tich-video-mau.md` (cách làm video mẫu + cách phân tích video mới), `engine.md` (API đầy đủ), `bai-hoc.md` (lỗi đã gặp)
 - Cần: Node + Playwright/Chromium, ffmpeg, Python3 + numpy/Pillow/scipy (`pip install scipy`).

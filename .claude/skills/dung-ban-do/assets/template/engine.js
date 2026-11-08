@@ -17,6 +17,8 @@ const SFX = []; const sfx = (t, name, g = 0) => SFX.push({ t: +t.toFixed(3), nam
 window.SFX_LIST = SFX;
 // hiệu ứng toàn khung — scene.js ghi đè: flash [[t,dur,max]], glow [[t,dur]], sweep [[t]]
 const FX = { flash: [[0, 0.5, 1]], glow: [], sweep: [] };
+// ảnh cần nạp trước khi chụp khung (clip()); render.js chờ window.READY()
+const READY_LIST = []; window.READY = () => Promise.all(READY_LIST);
 
 /* ---------- trạng thái bản đồ (điền trong initEngine) ---------- */
 let CFG, MZ, MX0, MY0, PINS = {}, ROUTE = [], OVC = [0, 0], OVS = 0.32, RL = 1, RINGS = [], DIM = [], KEYS = [];
@@ -225,6 +227,25 @@ function chip(icon, text, y, tin, tout) {                                 // vi�
 }
 function src(text, y, tin, tout) { const el = document.createElement('div'); el.className = 'src'; el.style.top = y + 'px'; el.textContent = text; els.appendChild(el); E.push({ type: 'fade', el, tin, tout }); }
 function note(text, y, tin, tout) { const el = document.createElement('div'); el.className = 'note'; el.style.top = y + 'px'; el.textContent = text; els.appendChild(el); E.push({ type: 'fade', el, tin, tout }); }
+// captions([[t0,t1,'câu có *từ nhấn*'],...], {y:1560,size:50}) — phụ đề đốt cứng, vùng an toàn y≈1560–1670. Tạo danh sách từ lời đọc bằng scripts/make_captions.py.
+function captions(list, o = {}) {
+  const y = o.y === undefined ? 1560 : o.y, fs = o.size || 50;
+  for (const [t0, t1, text] of list) {
+    const el = document.createElement('div'); el.className = 'cap'; el.style.top = y + 'px'; el.style.fontSize = fs + 'px';
+    el.innerHTML = String(text).replace(/\*(.+?)\*/g, '<b>$1</b>'); els.appendChild(el); E.push({ type: 'cap', el, tin: t0, tout: t1 });
+  }
+}
+// clip(mẫuTênFile, soKhung, fps, tin, tout, {x,y,w,h,radius,border,shadow,fit:'cover'|'contain',loop,from,fade,start})
+// Ghép cảnh quay (người dẫn, cảnh trám) bằng CHUỖI ẢNH đã tách sẵn: ffmpeg -i in.mp4 -vf "fps=30,scale=1080:-2" clips/a/%05d.jpg
+// (tách khung bằng ffmpeg để render xác định từng khung; âm thanh của clip trộn riêng ở audio.py/timeline vo). Mẫu tên: 'clips/a/%05d.jpg'.
+function clip(pat, n, fps, tin, tout, o = {}) {
+  const w = o.w || 1080, h = o.h || 1920, cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  cv.style.cssText = `position:absolute;left:${o.x || 0}px;top:${o.y || 0}px;width:${w}px;height:${h}px;${o.radius ? `border-radius:${o.radius}px;` : ''}${o.border ? `border:${o.border};box-sizing:border-box;` : ''}${o.shadow ? 'box-shadow:0 30px 80px rgba(0,0,0,.55);' : ''}`;
+  const imgs = [];
+  for (let i = 1; i <= n; i++) { const im = new Image(); READY_LIST.push(new Promise(r => { im.onload = r; im.onerror = r; })); im.src = pat.replace(/%0?(\d*)d/, (m, d) => String(i + (o.start || 0)).padStart(+d || 0, '0')); imgs.push(im); }
+  els.appendChild(cv); E.push({ type: 'clip', el: cv, tin, tout, imgs, fps, n, loop: o.loop !== false, fit: o.fit || 'cover', ctx: cv.getContext('2d'), w, h, fade: o.fade === undefined ? 0.2 : o.fade, from: o.from || 0 });
+  return cv;
+}
 function raw(html, tin, tout, type = 'fade') { const d = document.createElement('div'); d.innerHTML = html; const el = d.firstElementChild; els.appendChild(el); E.push({ type, el, tin, tout }); return el; }
 
 // dec = số chữ số thập phân (mặc định 0). Định dạng Việt: 1.234,5 — tự viết để không phụ thuộc ICU của Chromium.
@@ -268,6 +289,13 @@ window.render = function (t) {
     } else if (e.type === 'paper') {
       const x = eBack(clamp(k / 0.55)), y = (1 - x) * 700, r = e.rot + (1 - x) * 10, s = (0.88 + 0.12 * x) * (1 + 0.03 * clamp(k / 4)), outx = -eIO(ko) * 1100;
       el.style.transform = `translate(${outx}px,${y}px) rotate(${r}deg) scale(${s})`; el.style.opacity = clamp(k / 0.15) * (1 - ko * 0.3);
+    } else if (e.type === 'cap') {
+      const x = eBack(clamp(k / 0.14)); el.style.transform = `scale(${0.92 + 0.08 * x})`; el.style.opacity = clamp(k / 0.06) * (1 - ko);
+    } else if (e.type === 'clip') {
+      let idx = Math.floor((k + e.from) * e.fps); idx = e.loop ? ((idx % e.n) + e.n) % e.n : Math.min(e.n - 1, idx);
+      const im = e.imgs[idx], c = e.ctx; c.clearRect(0, 0, e.w, e.h);
+      if (im && im.naturalWidth) { const sc = (e.fit === 'contain' ? Math.min : Math.max)(e.w / im.naturalWidth, e.h / im.naturalHeight), dw = im.naturalWidth * sc, dh = im.naturalHeight * sc; c.drawImage(im, (e.w - dw) / 2, (e.h - dh) / 2, dw, dh); }
+      el.style.opacity = clamp(k / e.fade) * (1 - lin(t, e.tout - e.fade, e.tout));
     } else if (e.type === 'chip') { const x = eBack(clamp(k / 0.45)); el.style.transform = `translateX(${(1 - x) * -500}px)`; el.style.opacity = clamp(k / 0.12) * (1 - ko); }
     else if (e.type === 'pop') { const x = eBack(clamp(k / 0.5)), s = (0.3 + 0.7 * x) * (1 + 0.03 * Math.sin(Math.max(0, k - 0.5) * 6)); el.style.transform = `scale(${s})`; el.style.opacity = clamp(k / 0.1) * (1 - ko); }
     else el.style.opacity = clamp(k / 0.3) * (1 - ko);
