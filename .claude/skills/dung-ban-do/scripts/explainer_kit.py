@@ -16,10 +16,11 @@ def h2(say, concl, concl_cap=96, name='KHÁNH LINH', title='ĐẦU TƯ BĐS HẠ
         ('L', title, 'w', 48, 690, 0.1, 1.0),
         ('L', concl, 'r', concl_cap, 1280, 0.55, 1.0, {'anim': 'hero', 'sfx': 'impact', 'g': -4})]}
 
-def ctx(say, label, big, big_cap, sub, extra=None, note=None, bg='MAP', dim=True, big_opt=None):
-    els = [('L', label, 'w', 56, 560, 0.0, 1.0, {'sfx': 'whoosh'}),
-           ('L', sub, 'w', 46, 1010, 0.25, 1.0),
-           ('L', big, 'c', big_cap, 800, 0.35, 1.0, big_opt or {'anim': 'hero', 'sfx': 'impact', 'g': -3})]
+def ctx(say, label, big, big_cap, sub, extra=None, note=None, bg='MAP', dim=True, big_opt=None, ys=(560, 800, 1010)):
+    """ys = (y nhãn, y số lớn, y dòng phụ). Khi nền là MAP (vòng/ghim ở giữa khung): dùng ys=(330, 470, 1560) để chữ nằm trên/dưới bản đồ."""
+    els = [('L', label, 'w', 56, ys[0], 0.0, 1.0, {'sfx': 'whoosh'}),
+           ('L', sub, 'w', 46, ys[2], 0.25, 1.0),
+           ('L', big, 'c', big_cap, ys[1], 0.35, 1.0, big_opt or {'anim': 'hero', 'sfx': 'impact', 'g': -3})]
     if extra: els += extra
     if note: els.append(('S', note, 1700, 0.15, 1.0))
     return {'k': 'ctx', 'say': say, 'bg': bg, 'dim': dim, 'els': els}
