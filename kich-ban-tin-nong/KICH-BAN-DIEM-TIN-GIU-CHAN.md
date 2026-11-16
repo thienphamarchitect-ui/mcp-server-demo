@@ -1,4 +1,4 @@
-# KỊCH BẢN ĐIỂM TIN – BẢN GIỮ CHÂN NGƯỜI XEM (~75 GIÂY)
+# KỊCH BẢN ĐIỂM TIN – BẢN GIỮ CHÂN NGƯỜI XEM (~77 GIÂY) · ĐÃ CHỐT CÂU GIỚI THIỆU
 
 Người dẫn: Thiện, chủ công ty kiến trúc – nội thất LIA, nhà đầu tư LIA Retreat, cộng tác viên Regal.
 Áp dụng 8 kỹ thuật giữ chân. Số liệu giữ nguyên theo bản kiểm chứng (`KICH-BAN-DIEM-TIN-KTS-THIEN.md`). Khoảng 230 chữ.
@@ -15,8 +15,8 @@ Người dẫn: Thiện, chủ công ty kiến trúc – nội thất LIA, nhà 
 **[0–4s · HOOK]**
 Đang vay mua nhà thì nghe kỹ nha: có người sắp phải trả thêm **ba triệu mỗi tháng**. 🔁 Cuối video, Thiện nói cách tự bảo vệ mình.
 
-**[4–9s · GIỚI THIỆU + MINH BẠCH]**
-Thiện, chủ LIA, nhà đầu tư LIA Retreat, và nói trước cho minh bạch: Thiện là cộng tác viên của Regal.
+**[4–9s · GIỚI THIỆU]**
+Thiện làm kiến trúc, và cũng đang tự bỏ tiền làm khu nghỉ dưỡng LIA Retreat. Nên những gì Thiện nói hôm nay, là cách Thiện chọn cho chính mình.
 
 **[9–13s · CÂU TREO 1]**
 Ba tin nóng nửa đầu tháng mười một. 🔁 Và có một khu ở Đà Nẵng, tiền vẫn đổ vào dù thị trường đang giảm. Thiện để ở tin thứ ba.
@@ -34,15 +34,16 @@ Ba, số liệu DKRA: giao dịch căn hộ Đà Nẵng quý ba giảm **hai mư
 **[45–50s · CHUYÊN GIA]**
 Ông Võ Hồng Thắng, DKRA, nói rõ: tiền chỉ chảy vào dự án lớn, kết nối tốt, chủ đầu tư uy tín.
 
-**[50–53s · CÂU TREO 2]**
-Nên trước khi xuống tiền, Thiện hỏi ba câu. 🔁 Câu thứ ba là câu đa số người mua bỏ qua.
+**[50–55s · MINH BẠCH + CÂU TREO 2]**
+Thiện là cộng tác viên của Regal và nhiều dự án khác, nên Thiện không bán một dự án, mà giúp anh chị chọn đúng dự án.
+Và trước khi xuống tiền, Thiện luôn hỏi ba câu. 🔁 Câu thứ ba là câu đa số người mua bỏ qua.
 
-**[53–64s · BỘ LỌC 3 CÂU]**
+**[55–65s · BỘ LỌC 3 CÂU]**
 Một, **pháp lý**: đủ điều kiện bán chưa, hay mới là chủ trương?
 Hai, **kết nối**: đường, cầu có ngày thông xe chưa?
 Ba, **chủ đầu tư đã giao nhà thật chưa**? Làm kiến trúc, Thiện luôn đi xem tận nơi. Vật liệu, độ hoàn thiện không nói dối.
 
-**[64–75s · TRẢ LỜI HOOK + LƯU + LẶP VỀ ĐẦU]**
+**[65–77s · TRẢ LỜI HOOK + LƯU + LẶP VỀ ĐẦU]**
 Và cách tự bảo vệ mình: vay tối đa **năm mươi đến sáu mươi phần trăm**, tiền trả nợ **không quá nửa thu nhập**.
 Lưu video này lại, đọc lại trước khi ký hợp đồng. Vì chỉ cần vay quá tay một chút, ba triệu mỗi tháng đó… có thể là của mình.
 
@@ -57,7 +58,7 @@ Lưu video này lại, đọc lại trước khi ký hợp đồng. Vì chỉ c�
 |---|---|---|---|
 | 0–2 | CU mặt, zoom nhẹ vào | ĐANG VAY MUA NHÀ? | Flash trắng, impact |
 | 2–4 | CU | CÓ NGƯỜI SẮP TRẢ THÊM **3 TRIỆU/THÁNG** | Thẻ đỏ "+3 TRIỆU" đếm lên, cash |
-| 4–9 | MCU | THIỆN · CHỦ **LIA** · NHÀ ĐẦU TƯ **LIA RETREAT** · CTV REGAL | Lower-third, pop |
+| 4–9 | MCU | THIỆN · KIẾN TRÚC SƯ · CHỦ **LIA** · NHÀ ĐẦU TƯ **LIA RETREAT** | Lower-third, pop |
 | 9–13 | JC sang CU | **1 KHU** Ở ĐÀ NẴNG TIỀN VẪN ĐỔ VÀO? | Dấu "?" nhấp nháy trên bản đồ mờ, riser |
 | 13–17 | Bản đồ bay xuống Núi Thành | KHU ĐÔ THỊ CHU LAI · **19.000 TỶ** | Ghim cyan, whoosh |
 | 17–21 | Ảnh báo CafeF trượt vào | KHỞI CÔNG **12/2026** | Shutter, highlight vàng |
@@ -68,7 +69,8 @@ Lưu video này lại, đọc lại trước khi ký hợp đồng. Vì chỉ c�
 | 37–41 | Ảnh báo DKRA | GIAO DỊCH **-25%** | Mũi tên đỏ đi xuống |
 | 41–45 | Bản đồ zoom Ngũ Hành Sơn, flash | **NGŨ HÀNH SƠN 43%** | Bass drop, glow cyan |
 | 45–50 | Thẻ trích dẫn + ảnh ông Thắng (nếu có quyền dùng) | "TIỀN CHẢY VÀO **CĐT UY TÍN**" | Shutter |
-| 50–53 | CU, nghiêng người vào camera | CÂU THỨ 3 **ĐA SỐ BỎ QUA** | Nhạc tắt 0,5s |
+| 50–52 | MCU | CTV REGAL & NHIỀU DỰ ÁN · **CHỌN ĐÚNG DỰ ÁN** | Pop |
+| 52–55 | CU, nghiêng người vào camera | CÂU THỨ 3 **ĐA SỐ BỎ QUA** | Nhạc tắt 0,5s |
 | 53–57 | MCU + chip ① | ① **PHÁP LÝ** | Notify |
 | 57–60 | Chip ② + B-roll công trình hạ tầng | ② **KẾT NỐI THẬT** | Notify |
 | 60–64 | Chip ③ + B-roll cận vật liệu công trình đã bàn giao | ③ **ĐÃ GIAO NHÀ THẬT?** | Notify, sparkle |
