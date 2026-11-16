@@ -3,11 +3,14 @@
 | | |
 |---|---|
 | Định dạng | Người dẫn nói trực tiếp vào camera, video dọc 9:16 |
-| Thời lượng | Khoảng 90–100 giây, gần 300 chữ |
+| Thời lượng | Khoảng 100–105 giây, gần 330 chữ |
 | Cấu trúc | Hook → 3 tin, mỗi tin 1 con số → nhận định của chuyên gia → quan điểm cá nhân với 3 tiêu chí → lời mời |
 | Nguồn | Toàn bộ số liệu đã mở bài gốc và đối chiếu. Bảng nguồn ở cuối file |
 
-> Những chỗ trong **[ngoặc vuông]** là thông tin cá nhân. Anh sửa lại cho đúng sự thật hoặc bỏ đi. Tôi không tự viết thay anh số năm kinh nghiệm hay quan hệ công việc.
+> Thông tin người dẫn đã được anh Thiện xác nhận ngày 16/11/2026:
+> - Chủ công ty kiến trúc – nội thất **LIA**, nhà đầu tư khu nghỉ dưỡng **LIA Retreat**.
+> - Cộng tác viên phân phối của Regal, đồng thời tư vấn nhiều dự án khác.
+> - Tin đăng từ 23/10 đến 07/11 vẫn dùng được.
 
 ---
 
@@ -19,7 +22,7 @@
 Một siêu dự án gần **mười chín nghìn tỷ** vừa bị yêu cầu khởi công ngay tháng mười hai, / trong khi lãi vay mua nhà sắp nhảy lên **mười lăm phần trăm**. // Vậy bây giờ nên mua, hay nên chờ? //
 
 **[GIỚI THIỆU, 6–10s]**
-Tôi là Thiện, **[kiến trúc sư]**. / Ba tin nóng nửa đầu tháng mười một, và góc nhìn thật của tôi. //
+Tôi là Thiện, / chủ công ty kiến trúc nội thất LIA, / và là nhà đầu tư khu nghỉ dưỡng LIA Retreat. / Ba tin nóng nửa đầu tháng mười một, / và góc nhìn thật của tôi. //
 
 **[TIN 1, 10–24s]**
 Tin thứ nhất. / Đà Nẵng yêu cầu Đại Quang Minh, / công ty có Thaco nắm hơn bảy mươi hai phần trăm, / phấn đấu khởi công Khu đô thị Chu Lai ở Núi Thành ngay trong tháng mười hai. / Quy mô gần **một trăm chín mươi héc ta**, / gần bảy nghìn căn nhà. / Chậm nhất là ngày hai mươi chín tháng ba năm sau. //
@@ -34,15 +37,15 @@ Tin thứ ba, / ngay tại Đà Nẵng. / Quý ba, giao dịch căn hộ giảm 
 Ông Võ Hồng Thắng, / Phó tổng giám đốc DKRA, / nhận định: / thanh khoản đang tập trung vào dự án quy mô lớn, / kết nối thuận lợi, / và có chủ đầu tư uy tín. / Thị trường kỳ vọng hồi phục, / nhưng **khó có đột biến** trong ngắn hạn. //
 
 **[QUAN ĐIỂM CÁ NHÂN, 60–85s]**
-Còn góc nhìn của Thiện, / với con mắt một người làm kiến trúc: / tôi không xem đây là lúc mua theo tin. // Tôi lọc bằng **ba câu hỏi**. /
+Còn góc nhìn của Thiện, / vừa là người làm kiến trúc, / vừa là người tự bỏ tiền đầu tư: / tôi không mua theo tin. // Tôi lọc bằng **ba câu hỏi**. /
 Một: / dự án đã có pháp lý đủ điều kiện bán chưa, / hay mới là chủ trương? / Khởi công là bước đầu, / chưa phải giá trị. /
 Hai: / kết nối thật hay kết nối trên bản đồ? / Con đường, cây cầu đó đã có ngày thông xe chưa? /
 Ba: / chủ đầu tư đã bàn giao công trình nào thật chưa? / Vật liệu, độ hoàn thiện, cách vận hành, / đi xem tận mắt. //
 Và với lãi suất hiện nay, / chỉ vay tối đa năm mươi đến sáu mươi phần trăm, / tiền trả nợ không quá một nửa thu nhập. / Đó là lời khuyên của chuyên gia tài chính, / và Thiện đồng ý. //
 
 **[KẾT, 85–95s]**
+Thiện là cộng tác viên của Regal, / và tư vấn cả nhiều dự án khác. / Nên điều Thiện quan tâm / không phải bán được dự án nào, / mà là chọn đúng dự án cho đúng người. //
 Thị trường không thiếu tin nóng. / Thiếu là **bộ lọc**. // Anh chị muốn Thiện soi kỹ dự án hay khu vực nào? / Bình luận bên dưới, / video sau Thiện phân tích. //
-**[Lưu ý minh bạch, nếu đúng: "Thiện hiện đang tư vấn cho …, nên anh chị cân nhắc góc nhìn này cùng nhiều nguồn khác."]**
 
 ---
 
@@ -51,13 +54,13 @@ Thị trường không thiếu tin nóng. / Thiếu là **bộ lọc**. // Anh c
 | Thời gian | Khối | Chữ trên màn hình | Báo chứng / B-roll | SFX |
 |---|---|---|---|---|
 | 0–6s | Hook | **19.000 TỶ** · **LÃI 15%** · MUA HAY CHỜ? | Mặt người dẫn, chèn nhanh 2 thẻ báo | impact, whoosh |
-| 6–10s | Giới thiệu | KTS THIỆN · ĐIỂM TIN 1–15/11 | — | pop |
+| 6–12s | Giới thiệu | THIỆN · CHỦ CÔNG TY KIẾN TRÚC – NỘI THẤT LIA · NHÀ ĐẦU TƯ LIA RETREAT | — | pop |
 | 10–24s | Tin 1 | **188,56 HA** · **6.926 CĂN** · KHỞI CÔNG 12/2026 → 29/3/2027 | CafeF 07/11 + bản đồ bay xuống Núi Thành | ting, shutter |
 | 24–40s | Tin 2 | **13–15%** thả nổi · 12 → 15 TRIỆU/THÁNG (ví dụ) · HỆ SỐ K ×2–2,6 (DỰ THẢO) | Znews 07/11, Tiền Phong 07/11 | cash, impact |
 | 40–50s | Tin 3 | GIAO DỊCH **-25%** · NGŨ HÀNH SƠN **43%** | CafeF / Báo Đầu Tư (DKRA Q3) | ting |
 | 50–60s | Chuyên gia | "THANH KHOẢN TẬP TRUNG Ở CĐT UY TÍN" · Võ Hồng Thắng, DKRA | Thẻ trích dẫn + Báo Đầu Tư 23/10 | shutter |
 | 60–85s | Quan điểm | 3 câu hỏi: ① PHÁP LÝ ② KẾT NỐI THẬT ③ ĐÃ BÀN GIAO CHƯA · VAY ≤ 50–60% | Mặt người dẫn + B-roll công trình đã bàn giao | notify ×3 |
-| 85–95s | Kết | THIẾU LÀ BỘ LỌC · BÌNH LUẬN DỰ ÁN BẠN QUAN TÂM | Mặt người dẫn | pop |
+| 85–100s | Minh bạch + kết | CỘNG TÁC VIÊN REGAL & NHIỀU DỰ ÁN KHÁC · CHỌN ĐÚNG DỰ ÁN CHO ĐÚNG NGƯỜI · THIẾU LÀ BỘ LỌC | Mặt người dẫn | pop |
 
 Dòng cố định cuối video: *Thông tin tổng hợp từ báo chí, không phải khuyến nghị đầu tư. Lãi suất theo chính sách từng ngân hàng, từng thời điểm.*
 
@@ -73,7 +76,4 @@ Dòng cố định cuối video: *Thông tin tổng hợp từ báo chí, không
 | DKRA quý III/2026: giao dịch căn hộ Đà Nẵng -25%, Ngũ Hành Sơn chiếm 43% | [CafeF, 25/10/2026](https://cafef.vn/nguon-cung-so-cap-can-ho-tai-da-nang-giam-14-trong-quy-iii-2026-188261025063317834.chn) |
 | Nhận định của ông Võ Hồng Thắng (DKRA) | [Báo Đầu Tư, 23/10/2026](https://baodautu.vn/thi-truong-dat-nen-can-ho-da-nang-quy-iii2026-dong-tien-chon-loc-d729484.html) |
 
-**Cần anh xác nhận trước khi quay:**
-1. Chức danh "kiến trúc sư" và cách xưng hô "Thiện / anh chị" có đúng với kênh không.
-2. Anh có đang làm việc hoặc tư vấn cho chủ đầu tư nào không. Nếu có, nên đọc dòng minh bạch ở cuối, vì người xem tin hơn khi người nói công khai quan hệ lợi ích.
-3. Các tin trên đăng từ 23/10 đến 07/11. Nếu quay sau ngày 20/11, tôi nên cập nhật tin mới hơn.
+**Đã xác nhận:** chức danh, quan hệ với Regal và thời điểm của tin (16/11/2026).
