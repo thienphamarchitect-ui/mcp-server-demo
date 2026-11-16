@@ -1,65 +1,63 @@
-# KỊCH BẢN ĐỌC (GIỌNG NGƯỜI THẬT): ĐIỂM TIN BĐS NỬA ĐẦU THÁNG 11
+# KỊCH BẢN ĐỌC (TỰ NHIÊN + CHUYÊN NGHIỆP): ĐIỂM TIN BĐS NỬA ĐẦU THÁNG 11
 
 Người dẫn: Thiện, chủ công ty kiến trúc – nội thất LIA, nhà đầu tư khu nghỉ dưỡng LIA Retreat, cộng tác viên Regal.
 Độ dài: khoảng 95–100 giây. Số liệu giữ nguyên như bản kiểm chứng (`KICH-BAN-DIEM-TIN-KTS-THIEN.md`).
 
-> **Cách quay cho giống người thật:**
-> - Đừng học thuộc từng chữ. Đọc qua 2–3 lần cho nắm ý, rồi nói lại bằng lời của mình, nhìn thẳng camera. Chỉ cần nói đúng các con số.
-> - Được phép ngập ngừng, cười, nói "à", "ừm". Những chỗ đó làm người xem tin hơn là đọc trơn tru.
-> - Chỗ ghi *(dừng)* thì nghỉ nửa giây. Chỗ ghi *(nhìn thẳng)* là câu quan trọng, nói chậm lại.
+**Giọng điệu:** nói như một chuyên gia đang tư vấn trực tiếp cho khách. Gần gũi, nhưng mỗi ý đều có nguồn, có số, có lập luận.
+- Giữ lại một ít từ đệm ("nha", "anh chị để ý"), không quá 1 lần mỗi đoạn.
+- Mỗi tin đều nói tên nguồn ("theo CafeF", "số liệu DKRA").
+- Có khung rõ ràng để người xem theo dõi: 3 tin → nhận định chuyên gia → 3 câu hỏi của Thiện.
+
+> Chỗ ghi *(dừng)* thì nghỉ nửa giây. Chỗ ghi *(nhấn)* là câu chốt, nói chậm và rõ.
 
 ---
 
 **[MỞ]**
-Ừm, anh chị nào đang tính mua nhà ở Đà Nẵng thì nghe Thiện nói cái này nè.
-Tuần rồi có hai tin. Một là có dự án gần **mười chín nghìn tỷ** sắp khởi công. Hai là lãi vay mua nhà, có chỗ sắp lên tới **mười lăm phần trăm**. *(dừng)*
-Thì câu hỏi là: giờ mua, hay chờ?
+Anh chị đang tính mua nhà ở Đà Nẵng, thì có hai tin trong nửa đầu tháng mười một này không nên bỏ qua.
+Một dự án gần **mười chín nghìn tỷ** sắp khởi công. Và lãi vay mua nhà, sau ưu đãi, có thể lên tới **mười lăm phần trăm**. *(dừng)*
+Vậy nên mua hay nên chờ? Thiện điểm nhanh ba tin, rồi nói quan điểm của mình.
 
 **[GIỚI THIỆU]**
-À, cho ai mới xem kênh: Thiện làm kiến trúc, có công ty LIA, và cũng đang tự bỏ tiền làm khu nghỉ dưỡng LIA Retreat.
-Nên mấy chuyện này Thiện nhìn bằng hai con mắt: người làm nghề, và người cầm tiền thật.
+Thiện là chủ công ty kiến trúc nội thất LIA, và là nhà đầu tư khu nghỉ dưỡng LIA Retreat. Nên Thiện nhìn một dự án từ hai phía: người làm nghề, và người trực tiếp bỏ vốn.
 
-**[TIN 1]**
-Tin đầu tiên nha.
-Thành phố vừa yêu cầu Đại Quang Minh, tức là bên có Thaco đứng sau đó, cố gắng khởi công Khu đô thị Chu Lai ở Núi Thành ngay trong tháng mười hai này.
-Dự án gần **một trăm chín mươi héc ta**, gần bảy nghìn căn. Mà nếu kẹt thì trễ nhất là cuối tháng ba năm sau.
+**[TIN 1 – NGUỒN CUNG MỚI]**
+Tin thứ nhất, theo CafeF. Thành phố vừa yêu cầu Đại Quang Minh, doanh nghiệp do Thaco nắm hơn bảy mươi hai phần trăm, phấn đấu khởi công Khu đô thị Chu Lai ở Núi Thành ngay trong tháng mười hai.
+Quy mô gần **một trăm chín mươi héc ta**, gần bảy nghìn căn. Nếu vướng, chậm nhất là ngày hai mươi chín tháng ba năm sau.
 
-**[TIN 2]**
-Tin thứ hai thì… cái này đụng thẳng vô túi tiền luôn. *(dừng)*
-Lãi vay mua nhà năm đầu bây giờ khoảng tám rưỡi tới mười một rưỡi phần trăm. Nhưng hết ưu đãi là có thể nhảy lên **mười ba, mười lăm phần trăm**.
-Báo có kể một chị đang trả mười hai triệu một tháng, giờ sắp thành mười lăm triệu. Ba triệu một tháng đó, đâu phải ít đâu.
-Rồi chưa hết. Dự thảo luật đất đai mới đang tính tiền đất theo cái gọi là hệ số K. Có dự án, tiền đất có thể tăng **gấp đôi, thậm chí gấp hai lần rưỡi**.
-Nói cho dễ hiểu: *(nhìn thẳng)* giá nhà mới, khó mà giảm.
+**[TIN 2 – CHI PHÍ VỐN VÀ CHI PHÍ ĐẤT]**
+Tin thứ hai, liên quan trực tiếp đến dòng tiền của người mua.
+Lãi vay cố định năm đầu hiện khoảng tám rưỡi đến mười một rưỡi phần trăm. Hết ưu đãi, lãi thả nổi có thể lên **mười ba đến mười lăm phần trăm**. Znews ghi nhận có người đang trả mười hai triệu mỗi tháng, sắp tăng lên mười lăm triệu.
+Song song, dự thảo Luật Đất đai sửa đổi tính tiền sử dụng đất theo bảng giá nhân hệ số K. Hội Môi giới Bất động sản ước tính có dự án, tiền đất có thể tăng **hai đến hai phẩy sáu lần**.
+*(nhấn)* Chi phí đất tăng, thì giá nhà mới khó có cửa giảm.
 
-**[TIN 3]**
-Còn ở Đà Nẵng mình. Quý ba giao dịch căn hộ giảm khoảng **một phần tư**.
-Nhưng mà anh chị để ý nè: riêng Ngũ Hành Sơn thôi đã chiếm **gần một nửa** số giao dịch của cả thành phố.
+**[TIN 3 – THỊ TRƯỜNG ĐÀ NẴNG]**
+Tin thứ ba, số liệu của DKRA quý ba. Giao dịch căn hộ Đà Nẵng giảm **hai mươi lăm phần trăm**.
+Nhưng anh chị để ý: riêng Ngũ Hành Sơn vẫn chiếm **bốn mươi ba phần trăm** giao dịch toàn thành phố. Tiền không biến mất, tiền đang chọn chỗ.
 
-**[CHUYÊN GIA]**
-Anh Võ Hồng Thắng bên DKRA có nói một câu mà Thiện thấy rất trúng: tiền bây giờ chỉ chảy vào dự án lớn, kết nối tốt, chủ đầu tư uy tín.
-Còn thị trường thì sẽ hồi, nhưng hồi từ từ thôi, đừng mong nó bật lên một phát.
+**[NHẬN ĐỊNH CHUYÊN GIA]**
+Ông Võ Hồng Thắng, Phó tổng giám đốc DKRA, nhận định: thanh khoản sẽ tập trung vào dự án quy mô lớn, kết nối thuận lợi, chủ đầu tư uy tín. Thị trường kỳ vọng hồi phục, nhưng khó có đột biến trong ngắn hạn.
 
 **[QUAN ĐIỂM CỦA THIỆN]**
-Vậy Thiện nghĩ sao?
-Nói thật, Thiện không mua theo tin. *(dừng)* Trước khi xuống tiền, Thiện chỉ hỏi ba câu.
-Một: dự án này bán được chưa, hay mới là chủ trương? Khởi công là mới bắt đầu thôi nha.
-Hai: con đường, cây cầu kết nối đó có ngày thông xe chưa, hay mới nằm trên bản đồ?
-Ba: chủ đầu tư này đã giao nhà thật cái nào chưa? Thì mình đi xem tận nơi. Làm kiến trúc nên Thiện nói thật, nhìn vật liệu, nhìn độ hoàn thiện, nhìn cách họ vận hành, là biết làm thật hay làm cho đẹp.
-Còn chuyện vay, anh chị nhớ giùm Thiện: đừng vay quá nửa giá trị căn nhà, cùng lắm sáu mươi phần trăm thôi. Và tiền trả nợ đừng quá nửa thu nhập. Lãi lên một cái là thấm liền.
+Thiện đồng ý với nhận định đó, và Thiện không mua theo tin. *(dừng)* Trước khi xuống tiền, Thiện kiểm tra ba điều.
+Một, **pháp lý**: dự án đã đủ điều kiện bán chưa, hay mới dừng ở chủ trương? Khởi công chỉ là bước đầu.
+Hai, **kết nối thật**: con đường, cây cầu đã có tiến độ, có ngày thông xe chưa, hay mới nằm trên bản đồ quy hoạch?
+Ba, **năng lực chủ đầu tư**: họ đã bàn giao công trình nào chưa? Với góc nhìn kiến trúc, Thiện luôn đi xem tận nơi: vật liệu, độ hoàn thiện, cách vận hành. Đó là bằng chứng rõ nhất.
+Về tài chính, Thiện đồng tình với lời khuyên của chuyên gia: vay tối đa năm mươi đến sáu mươi phần trăm giá trị căn nhà, và tiền trả nợ không quá một nửa thu nhập. Lãi suất thả nổi là rủi ro thật, không phải lý thuyết.
 
 **[MINH BẠCH + KẾT]**
-À, nói luôn cho rõ ràng: Thiện là cộng tác viên của Regal, và cũng tư vấn nhiều dự án khác nữa. Nên với Thiện, bán được căn nào không quan trọng bằng chọn đúng căn cho đúng người.
-*(nhìn thẳng)* Tin nóng thì ngày nào cũng có. Cái mình thiếu là một bộ lọc.
-Anh chị đang để ý dự án nào, khu nào, comment cho Thiện. Video sau Thiện soi giúp.
+Để minh bạch: Thiện là cộng tác viên của Regal, đồng thời tư vấn nhiều dự án khác. Vì vậy điều Thiện quan tâm không phải bán được dự án nào, mà là chọn đúng dự án cho đúng người.
+*(nhấn)* Thị trường không thiếu tin nóng. Cái người mua cần là một bộ lọc.
+Anh chị đang quan tâm dự án hay khu vực nào, để lại bình luận. Video sau Thiện phân tích cụ thể.
 
 ---
 
-## Những gì đã làm cho giống người thật
-- **Từ đệm và câu nói chuyện:** "Ừm", "À", "nha", "nè", "đâu phải ít đâu", "thấm liền", "nhớ giùm Thiện".
-- **Câu tự hỏi tự trả lời:** "Vậy Thiện nghĩ sao?", "giờ mua, hay chờ?".
-- **Một chi tiết đời thường để người xem hình dung:** "Ba triệu một tháng đó, đâu phải ít đâu", lấy từ ví dụ thật trong bài Znews, không bịa thêm.
-- **Góc nhìn nghề nghiệp thật của anh:** "Làm kiến trúc nên nhìn vật liệu, độ hoàn thiện là biết làm thật hay làm cho đẹp", đúng với chức danh anh đã xác nhận.
-- **Số phụ đọc theo kiểu nói:** "một phần tư", "gần một nửa", "gấp đôi, gấp hai lần rưỡi". Trên màn hình vẫn hiện số chính xác (-25%, 43%, ×2–2,6).
-- **Không bịa:** không thêm số năm kinh nghiệm, không thêm câu chuyện khách hàng.
+## Cân bằng giữa tự nhiên và chuyên nghiệp
+| Giữ lại cho tự nhiên | Thêm vào cho chuyên nghiệp |
+|---|---|
+| Xưng "Thiện / anh chị", câu mở gọi thẳng người xem | Nêu tên nguồn ở từng tin: CafeF, Znews, DKRA, Hội Môi giới BĐS |
+| Vài câu đời thường: "Tiền không biến mất, tiền đang chọn chỗ" | Đặt tên cho từng tin: nguồn cung mới, chi phí vốn, thị trường Đà Nẵng |
+| Câu hỏi "nên mua hay nên chờ?" | Số đọc chính xác như trên màn hình (25%, 43%, 2–2,6 lần) |
+| Một chi tiết đời thường: 12 → 15 triệu/tháng | Ba tiêu chí có tên rõ ràng: pháp lý, kết nối thật, năng lực chủ đầu tư |
+| | Câu minh bạch dùng văn nói trang trọng ("Để minh bạch") |
 
-**Nguồn:** giống bản đã kiểm chứng: CafeF 07/11, Znews 07/11, Tiền Phong 07/11, CafeF 25/10 (DKRA), Báo Đầu Tư 23/10.
+**Nguồn:** CafeF 07/11, Znews 07/11, Tiền Phong 07/11 (hệ số K, ước tính của VARS, tức Hội Môi giới BĐS Việt Nam), CafeF 25/10 (DKRA), Báo Đầu Tư 23/10.
